@@ -28,6 +28,7 @@
 	//Caustic Edit End
 
 /mob/living/Destroy()
+	cancel_disconnected_admin_alert()
 	surgeries = null
 	if(LAZYLEN(status_effects))
 		for(var/s in status_effects)
