@@ -730,7 +730,7 @@
 
 /mob/living/carbon/human/proc/generate_main_examine_body(mob/user, m1, m2, m3, obscure_name, race_name, origin_name, observer_privilege, list/unknown_names)
 	. = list()
-		//OV edit
+	//OV edit
 	var/pvp_pref = get_pvp_icon()
 	var/pvp_icon
 	if(pvp_pref && client.prefs.directory_pvp)
@@ -892,8 +892,8 @@
 			if((bath_viewer.job in GLOB.bathhouse_positions) || HAS_TRAIT(bath_viewer, TRAIT_AGENT_BATHHOUSE))
 				. += span_notice("[m1] an agent of the Bathhouse.")
 
-		if(HAS_TRAIT(src, TRAIT_ARMOR_BREAK))
-			. += span_phobia("[capitalize(m2)] armor hangs on by a thread...")
+		//if(HAS_TRAIT(src, TRAIT_ARMOR_BREAK)) //OV EDIT
+		//	. += span_phobia("[capitalize(m2)] armor hangs on by a thread...") //OV EDIT
 
 		if(src.job in GLOB.church_positions)
 			if(!HAS_TRAIT(user, TRAIT_CLERGY))
