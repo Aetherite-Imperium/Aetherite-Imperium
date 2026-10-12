@@ -506,6 +506,11 @@
         of steel + grand tome on hip at the price of losing their mana potion (you couldn't
         use it anyway lol)
 2026-10-08:
+  Tenryumi:
+    - balance: Wretches are always capped at 12, regardless of game mode.
+  TheToaster98:
+    - rscadd: OV-custom drinks now interact with the cuisine system.
+    - refactor: OV-custom drinks now use consumable instead of water paths.
   Ryan180602:
     - balance: unarmed weapons cannot be used with shields anymore.
     - balance: knuckledusters in glove slots means you can't use weapons
