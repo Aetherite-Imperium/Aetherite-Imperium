@@ -1,4 +1,4 @@
-//Descriptions, tastes, and names all done by Dragor
+/*//Descriptions, tastes, and names all done by Dragor
 
 /datum/reagent/consumable/bufftea
 	drink_type = DRINKTYPE_CAFFEINE
@@ -515,4 +515,4 @@ You see the sky from a pit and a palace both."))
 		if (LAZYLEN(our_wounds))
 			var/upd = M.heal_wounds(1)
 			if (upd)
-				M.update_damage_overlays()
+				M.update_damage_overlays() */

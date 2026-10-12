@@ -1,4 +1,4 @@
-/datum/status_effect/buff/tea/perceptiontea
+/*/datum/status_effect/buff/tea/perceptiontea
 	id = "pertea"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/tea/per
 	effectedstats = list(STATKEY_PER = 1)
@@ -47,4 +47,4 @@
 	name = STATKEY_WIL
 
 /atom/movable/screen/alert/status_effect/buff/tea/int
-	name = STATKEY_INT
+	name = STATKEY_INT*/

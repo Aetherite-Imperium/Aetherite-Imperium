@@ -1,4 +1,4 @@
-#define STEW_COOKING_TIME 30 SECONDS
+/*#define STEW_COOKING_TIME 30 SECONDS
 /datum/container_craft/cooking/minttea
 	name = "Mint Tea"
 	wildcard_requirements = list(/obj/item/alch/mentha = 1)
@@ -168,5 +168,5 @@
 	created_reagent = /datum/reagent/consumable/avantare
 	crafting_time = STEW_COOKING_TIME
 
-#undef STEW_COOKING_TIME
+#undef STEW_COOKING_TIME*/
 
