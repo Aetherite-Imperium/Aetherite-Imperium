@@ -438,8 +438,9 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 	var/Zs_yell = FALSE
 	var/listener_has_ceiling	= TRUE
 	var/speaker_has_ceiling		= TRUE
-	//OV Edit Start
+	//OV Edit START
 	var/atom/movable/speech_source = source || src
+	//OV EDIT END
 	var/turf/speaker_turf = get_turf(speech_source)
 	var/turf/speaker_ceiling = GET_TURF_ABOVE(speaker_turf)
 
@@ -474,7 +475,7 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 				S.verb_yell = initial(S.verb_yell)
 		remove_status_effect(/datum/status_effect/thaumaturgy)
 	// AZURE EDIT END
-	var/list/listening = get_hearers_in_range(message_range+eavesdrop_range, speech_source)
+	var/list/listening = get_hearers_in_range(message_range + eavesdrop_range, speech_source) //OV EDIT
 	// seen log tags, one distance check per listener: ~ eavesdropped the starred version, a numpad digit points
 	// toward speech from past their screen edge. Skipped when the radius cannot reach that far, ie every normal say
 	if(eavesdrop_range || message_range > SEEN_LOG_OFFSCREEN_DIST)
@@ -545,11 +546,11 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 			hearall = TRUE
 		listener_has_ceiling = listener_ceiling && !istransparentturf(listener_ceiling)
 		if(!hearall && !Zs_too && !admin_listeners[AM] && AM.z != src.z)
-			//OV edit
+			//OV EDIT START
 			if(!istype(loc, /obj/belly) && !istype(loc, /obj/item/holder/micro) && !istype(AM.loc, /obj/belly) && !istype(AM.loc, /obj/item/holder/micro)) //can't use isbelly because its defined badly here
-				if(listener_turf.z != speaker_turf.z) //OV Edit
+				if(listener_turf.z != speaker_turf.z)
 					continue
-			//OV edit end
+			//OV EDIT END
 		var/keenears = HAS_TRAIT(AM, TRAIT_KEENEARS)
 		if(!hearall && Zs_too && listener_turf.z != speaker_turf.z && !Zs_all)
 			if(!Zs_yell && !keenears)
