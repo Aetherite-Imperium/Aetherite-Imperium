@@ -633,11 +633,6 @@
 		if(heart?.inscryption && (heart.inscryption_key in maniac.key_nums))
 			. += span_danger("[t_He] know[p_s()] [heart.inscryption_key], I AM SURE OF IT!")
 
-	//Caustic Edit - Attempt to add a quick AFK tag to examine text!
-	if(client && away_from_keyboard && manual_afk)
-		. += span_warning("\[Away From Keyboard for [round((client.inactivity/10)/60)] minutes.\]")
-	//Caustic Edit End
-
 	if(!HAS_TRAIT(src, TRAIT_DECEIVING_MEEKNESS) && user != src)
 		if(isliving(user))
 			var/mob/living/L = user
@@ -779,13 +774,13 @@
 		var/displayed_headshot
 		var/datum/antagonist/vampire/vampireplayer = src.mind?.has_antag_datum(/datum/antagonist/vampire)
 		var/datum/antagonist/lich/lichplayer = src.mind?.has_antag_datum(/datum/antagonist/lich)
-		var/datum/antagonist/werewolf/werewolfplayer = src.mind?.has_antag_datum(/datum/antagonist/werewolf) // OC Add var
+		var/datum/antagonist/werewolf/werewolfplayer = src.mind?.has_antag_datum(/datum/antagonist/werewolf) // OV Add var
 		if(vampireplayer && (!SEND_SIGNAL(src, COMSIG_DISGUISE_STATUS))&& !isnull(vampire_headshot_link))
 			displayed_headshot = src.vampire_headshot_link
 		else if (lichplayer && !isnull(src.lich_headshot_link))
 			displayed_headshot = src.lich_headshot_link
-		else if (werewolfplayer && (werewolfplayer.transformed || istype(src, /mob/living/carbon/human/species/werewolf)) && !isnull(src.werewolf_headshot_link)) //Werewolf with a valid headshot && transformed // OC Add ELSE IF WEREWOLF
-			displayed_headshot = src.werewolf_headshot_link
+		else if (werewolfplayer && (werewolfplayer.transformed || istype(src, /mob/living/carbon/human/species/werewolf)) && !isnull(src.werewolf_headshot_link)) //Werewolf with a valid headshot && transformed // OV ADD ELSE IF WEREWOLF
+			displayed_headshot = src.werewolf_headshot_link //OV ADD
 		else
 			displayed_headshot = src.headshot_link
 
