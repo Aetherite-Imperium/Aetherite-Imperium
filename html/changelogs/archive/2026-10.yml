@@ -732,6 +732,12 @@
         naming yourself as a goblin is moved to a 'spell' to spam you less w/ spawning
         in prompts.
 2026-10-13:
+  NickBelmont:
+    - bugfix: Book crafting now works again.
+  SatinIsle:
+    - qol:
+        Adds a bunch of additional checks to vision quest targets for painters, to
+        protect them and the people they look at from accidental scene intrusion.
   FreeStylaLT:
     - rscadd: A toggle for showing NSFW examine / gallery options even when clothed.
   KatTheFox:
