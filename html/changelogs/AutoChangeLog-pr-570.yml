@@ -1,0 +1,4 @@
+author: "SatinIsle"
+delete-after: True
+changes:
+  - qol: "Adds a bunch of additional checks to vision quest targets for painters, to protect them and the people they look at from accidental scene intrusion."
