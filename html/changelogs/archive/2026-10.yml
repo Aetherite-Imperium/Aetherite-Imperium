@@ -315,8 +315,6 @@
         bookcase etc. - report any issues.
     - rscadd: When you the extract of lux from mindless mobs, mindless mobs die.
 2026-10-06:
-  SomeDeviant:
-    - rscadd: Added AP sync 9.26.26 to 10.5.26
   KatTheFox:
     - rscadd:
         The INDEXER report no longer gaslights you with a fake false positive
@@ -348,6 +346,8 @@
         Wearing a plated ordinator coat as a Psydonian now applies the Psydonic
         Grit active event, as it normally would with the standalone variant.
     - code_imp: Minor rearranging of hauberk-related wordings.
+  SomeDeviant:
+    - rscadd: Added AP sync 9.26.26 to 10.5.26
   ToasterStrudes:
     - rscadd:
         "Added new mixed drinks: The Etrusso and Milk Tea - Made by combining
@@ -506,11 +506,6 @@
         of steel + grand tome on hip at the price of losing their mana potion (you couldn't
         use it anyway lol)
 2026-10-08:
-  Tenryumi:
-    - balance: Wretches are always capped at 12, regardless of game mode.
-  TheToaster98:
-    - rscadd: OV-custom drinks now interact with the cuisine system.
-    - refactor: OV-custom drinks now use consumable instead of water paths.
   Ryan180602:
     - balance: unarmed weapons cannot be used with shields anymore.
     - balance: knuckledusters in glove slots means you can't use weapons
@@ -523,6 +518,11 @@
         Confessors get a choice between Couir-Boulli and the existing tunic as
         underarmour.
     - rscadd: A small system to bypass certain armour layers to be worn with other armour.
+  Tenryumi:
+    - balance: Wretches are always capped at 12, regardless of game mode.
+  TheToaster98:
+    - rscadd: OV-custom drinks now interact with the cuisine system.
+    - refactor: OV-custom drinks now use consumable instead of water paths.
   ToasterStrudes:
     - bugfix: Etrusso is no longer an Etrusso and is now a Etruccino.
   WeNeedMorePhoron:
@@ -732,12 +732,6 @@
         naming yourself as a goblin is moved to a 'spell' to spam you less w/ spawning
         in prompts.
 2026-10-13:
-  NickBelmont:
-    - bugfix: Book crafting now works again.
-  SatinIsle:
-    - qol:
-        Adds a bunch of additional checks to vision quest targets for painters, to
-        protect them and the people they look at from accidental scene intrusion.
   FreeStylaLT:
     - rscadd: A toggle for showing NSFW examine / gallery options even when clothed.
   KatTheFox:
@@ -778,6 +772,8 @@
     - balance: Max hunting trail length from 7 => 6 piles
     - balance: Min hunting trail length from 5 => 4 piles (Expert-master)
     - qol: Moved all maps into their own dedicated category
+  NickBelmont:
+    - bugfix: Book crafting now works again.
   Quinalion:
     - refactor:
         Updated silver weapon paths across maps, loadouts, loot spawners and
@@ -791,6 +787,10 @@
   Ryan180602:
     - bugfix: Frei Pike sprite is a little shorter now.
     - rscadd: Frei Pike gets a weak 0.6x cut.
+  SatinIsle:
+    - qol:
+        Adds a bunch of additional checks to vision quest targets for painters, to
+        protect them and the people they look at from accidental scene intrusion.
   azurexautyr-arch:
     - rscadd: Added a donor xylixian estoc for _._yoshi
   borneblood:
@@ -825,6 +825,14 @@
     - rscadd: wrenches can be twirled with expert Engineering
     - rscdel: Removes demlish from wrench and bogbark clubs, again
 2026-10-15:
+  Obengrad:
+    - bugfix:
+        Changed the TGUI color for non-vore people to grey, hopefully making it
+        more visible.
+  Ryumi:
+    - rscadd: Most private key PEDDLERs now sell reform gems.
+  SomeDeviant:
+    - rscadd: Added weekly AP Sync 10.6.26 to 10.13.26
   BobProductive:
     - bugfix: (hopefully) fixes the ckey
   BurpleBineapple:
