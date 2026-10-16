@@ -3,10 +3,10 @@
  * @license MIT
  */
 
+import { diceLabelSize, diceShape } from 'tgui/interfaces/common/DiceIcon';
 import { sanitizeHTML } from 'tgui/sanitize';
 import { Tooltip } from 'tgui-core/components';
 import { classes } from 'tgui-core/react';
-import { diceLabelSize, diceShape } from 'tgui/interfaces/common/DiceIcon';
 
 /** Mirrors DICE_MAX_COUNT and DICE_MAX_SIDES in roll_emotes.dm. */
 const MAX_DICE = 24;
@@ -100,13 +100,16 @@ const parseThrows = (
 
 /** One value applies to every throw, `|`-separated values give each throw its own die. */
 const parseSides = (sides: string | undefined): number[] => {
-  const parsed = (sides ?? '').split('|').slice(0, MAX_THROWS).map((side) => {
-    const value = Number.parseInt(side, 10);
-    if (!Number.isInteger(value)) {
-      return 6;
-    }
-    return Math.min(Math.max(value, 2), MAX_SIDES);
-  });
+  const parsed = (sides ?? '')
+    .split('|')
+    .slice(0, MAX_THROWS)
+    .map((side) => {
+      const value = Number.parseInt(side, 10);
+      if (!Number.isInteger(value)) {
+        return 6;
+      }
+      return Math.min(Math.max(value, 2), MAX_SIDES);
+    });
   return parsed.length ? parsed : [6];
 };
 
@@ -127,7 +130,14 @@ export const RollTooltip = (props: RollTooltipProps) => {
     ...rest
   } = props;
 
-  const throws = parseThrows(dice, labels, outcomes, stats, footers, parseSides(sides));
+  const throws = parseThrows(
+    dice,
+    labels,
+    outcomes,
+    stats,
+    footers,
+    parseSides(sides),
+  );
   const outcomeClass = parseOutcome(outcome);
   // One size for every die: the smallest any throw needs.
   const size = Math.min(
@@ -145,7 +155,9 @@ export const RollTooltip = (props: RollTooltipProps) => {
             <div
               className="RollTooltip__label"
               // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: sanitizeHTML(roll.label ?? '') }}
+              dangerouslySetInnerHTML={{
+                __html: sanitizeHTML(roll.label ?? ''),
+              }}
             />
             <div
               className="RollTooltip__dice"
@@ -167,11 +179,15 @@ export const RollTooltip = (props: RollTooltipProps) => {
                 />
               ))}
             </div>
-            <div className={roll.footer ? 'RollTooltip__separator' : undefined} />
+            <div
+              className={roll.footer ? 'RollTooltip__separator' : undefined}
+            />
             <div
               className="RollTooltip__footer"
               // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{ __html: sanitizeHTML(roll.footer ?? '') }}
+              dangerouslySetInnerHTML={{
+                __html: sanitizeHTML(roll.footer ?? ''),
+              }}
             />
           </div>
         ))}

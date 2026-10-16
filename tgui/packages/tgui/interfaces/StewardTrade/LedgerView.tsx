@@ -117,7 +117,9 @@ const LedgerRow = (props: { entry: LedgerEntry }) => {
             color: INK_SOFT,
           }}
         >
-          <div style={{ ...ellipsisCellStyle, paddingLeft: leg.cr ? '18px' : 0 }}>
+          <div
+            style={{ ...ellipsisCellStyle, paddingLeft: leg.cr ? '18px' : 0 }}
+          >
             {leg.cr ? 'To ' : 'Dr '}
             {leg.account}
           </div>
@@ -190,7 +192,10 @@ export const LedgerView = (props: { data: Data }) => {
       <div>
         {tabs}
         {view === 'ledger' && (
-          <GeneralLedgerPanel chart={page.chart} account={page.account_ledger} />
+          <GeneralLedgerPanel
+            chart={page.chart}
+            account={page.account_ledger}
+          />
         )}
         {view === 'trial' && (
           <TrialBalancePanel

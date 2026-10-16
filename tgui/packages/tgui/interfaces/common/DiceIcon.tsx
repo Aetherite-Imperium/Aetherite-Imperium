@@ -106,7 +106,9 @@ export function DiceIcon(props: Props) {
       ) : (
         <polygon className="DiceIcon__outline" points={shape.outline} />
       )}
-      {shape.front && <polygon className="DiceIcon__edge" points={shape.front} />}
+      {shape.front && (
+        <polygon className="DiceIcon__edge" points={shape.front} />
+      )}
       {shape.edges && <path className="DiceIcon__edge" d={shape.edges} />}
       <text
         className="DiceIcon__label"

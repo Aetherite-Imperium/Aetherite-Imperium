@@ -116,8 +116,8 @@ function Help() {
       <p>
         Every die at its highest is a CRITICAL SUCCESS, every die on 1 a
         CRITICAL FAIL. They decide a difficulty alone, and only count on rolls
-        that crit at most 1 time in 20, like a d20, 2d10 or 3d6. Untick Crits
-        to leave them out.
+        that crit at most 1 time in 20, like a d20, 2d10 or 3d6. Untick Crits to
+        leave them out.
       </p>
       <Box className="DiceBuilder__HelpTitle">Typing it instead</Box>
       <p>
@@ -129,8 +129,8 @@ function Help() {
           <b>2d6</b>: dice and faces. The count is optional.
         </li>
         <li>
-          <b>+3</b>, <b>-2</b>, or a stat: <b>+STR +PER +INT +CON +WIL +SPD
-          +FOR +CHA</b>.
+          <b>+3</b>, <b>-2</b>, or a stat:{' '}
+          <b>+STR +PER +INT +CON +WIL +SPD +FOR +CHA</b>.
         </li>
         <li>
           <b>/DC15</b> sets a difficulty, <b>/NOCRIT</b> drops criticals.
@@ -226,7 +226,12 @@ export function DiceBuilder() {
                 />
               </Row>
               <Row label="Faces">
-                <Stepper value={sides} min={2} max={maxSides} onChange={setSides} />
+                <Stepper
+                  value={sides}
+                  min={2}
+                  max={maxSides}
+                  onChange={setSides}
+                />
               </Row>
               <Row label="Bonus">
                 <Stepper
@@ -274,7 +279,10 @@ export function DiceBuilder() {
                 {stats.map((option) => (
                   <Button
                     key={option.key}
-                    className={classes(['DiceBuilder__Stat', godClass(option.key)])}
+                    className={classes([
+                      'DiceBuilder__Stat',
+                      godClass(option.key),
+                    ])}
                     selected={stat === option.key}
                     tooltip={option.name}
                     onClick={() => setStat(option.key)}

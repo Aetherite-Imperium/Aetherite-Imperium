@@ -82,7 +82,12 @@ export function ContestResponse() {
                 {challengerName} challenges you with
                 {godClass(attackingStat) ? ' their' : ''}
               </Box>
-              <Box className={classes(['ContestResponse__Stat', godClass(attackingStat)])}>
+              <Box
+                className={classes([
+                  'ContestResponse__Stat',
+                  godClass(attackingStat),
+                ])}
+              >
                 {attackingStat}
               </Box>
             </Stack.Item>
