@@ -223,7 +223,7 @@
 		if("bow")
 			H.adjust_skillrank_up_to(/datum/skill/combat/bows, skill, TRUE)
 			r_hand = /obj/item/gun/ballistic/revolver/grenadelauncher/bow
-			backl = /obj/item/quiver/conjured_stone
+			backl = /obj/item/quiver/conjured
 			armor = /obj/item/clothing/suit/roguetown/shirt/rags
 			head = null
 			H.STACON -= 1

@@ -124,7 +124,6 @@ GLOBAL_PROTECT(admin_verbs_admin)
 	/datum/admins/proc/extend_round,
 	/client/proc/cmd_admin_set_ic_date, /* Set custom IC date for events */
 	/client/proc/reenable_pq, //OV ADD
-	/client/proc/log_viewer_new, // OV Add: JSON Logging
 	/client/proc/item_gm_quest, //OV ADD
 	/client/proc/spawn_player, //OV ADD
 	)
