@@ -172,7 +172,7 @@
 					continue
 //-------- Undies Code finishes here
 
-//-------- Taur Tabard Code Starts here
+/*//-------- Taur Tabard Code Starts here - OV EDIT - Removed due to our own taur code
 				if(istype(thing, /obj/item/clothing/cloak/tabard))
 					var/mob/living/carbon/human/wearer = loc
 					if(istype(wearer))
@@ -185,7 +185,7 @@
 									tabard_piece.pixel_x += standing.pixel_x
 									tabard_piece.pixel_y += standing.pixel_y
 									standing.add_overlay(tabard_piece)
-								continue
+								continue*/
 //-------- Taur Tabard Code finishes here
 				var/mutable_appearance/thing_appearance = thing.build_worn_icon(default_layer, default_icon_file, isinhands, femaleuniform, override_state, female, customi, sleeveindex, boobed_overlay, clip_mask)
 				thing_appearance.appearance_flags = RESET_COLOR

@@ -2180,7 +2180,7 @@
 
 // -- saiga-taur barding (worn by the player-controlled saiga-taur race, not the mount barding above)
 
-/datum/crafting_recipe/roguetown/sewing/saigataurbarding_cloth
+/*/datum/crafting_recipe/roguetown/sewing/saigataurbarding_cloth - OV EDIT - we have our own stuff
 	name = "cloth saiga barding"
 	category = "Misc"
 	display_category = ITEM_CAT_ARMOR_BARDING
@@ -2217,7 +2217,7 @@
 	reqs = list(/obj/item/natural/cloth = 4,
 				/obj/item/natural/fibers = 2)
 	tools = list(/obj/item/needle)
-	craftdiff = 2
+	craftdiff = 2*/
 
 /datum/crafting_recipe/roguetown/sewing/sanguinetrousers
 	name = "sanguine trousers"

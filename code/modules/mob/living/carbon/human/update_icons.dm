@@ -835,14 +835,14 @@ There are several things that need to be remembered:
 					apply_offset(mbeltoverlay, OFFSET_BELT, OFFSET_BELT_F)
 				standing_front += mbeltoverlay
 
-	var/obj/item/bodypart/taur/taur_belt = get_taur_tail()
+	/*var/obj/item/bodypart/taur/taur_belt = get_taur_tail() - OV EDIT
 	if(taur_belt?.taur_clothing_category)
 		var/obj/item/worn_belt = belt || beltr || beltl
 		if(worn_belt)
 			var/belt_state = findtext(worn_belt.icon_state, "black") ? "blackbelt" : "belt"
 			var/mutable_appearance/taur_belt_ov = mutable_appearance('icons/roguetown/clothing/onmob/64x32/saiga_barding.dmi', "[taur_belt.taur_clothing_category]_[belt_state]", -BELT_LAYER)
 			taur_belt_ov.pixel_x = taur_belt.offset_x
-			standing_front += taur_belt_ov
+			standing_front += taur_belt_ov*/
 
 	overlays_standing[BELT_LAYER] = standing_front
 	overlays_standing[BELT_BEHIND_LAYER] = standing_behind
@@ -1019,7 +1019,7 @@ There are several things that need to be remembered:
 	apply_overlay(BACK_BEHIND_LAYER)
 	apply_overlay(UNDER_CLOAK_LAYER)
 
-/// I essentially ported my own PR from RW to do this: https://github.com/Rotwood-Vale/Ratwood-2.0/pull/1320 here for context.
+/*/// I essentially ported my own PR from RW to do this: https://github.com/Rotwood-Vale/Ratwood-2.0/pull/1320 here for context. - OV EDIT - We Have our own taur system
 /// Builds the taur tabard heraldry overlay(s) for a worn tabard-type cloak, mirroring /obj/item/clothing/cloak/tabard's own base+pattern layering.
 /// Returns null if this isn't a tabard the taur has sprites for.
 /mob/living/carbon/human/proc/build_taur_tabard_overlay(obj/item/bodypart/taur/taur, obj/item/clothing/cloak/cloak)
@@ -1040,7 +1040,7 @@ There are several things that need to be remembered:
 		if(cloak.get_detail_color())
 			pattern_ov.color = cloak.get_detail_color()
 		taur_tabard_layers += pattern_ov
-	return taur_tabard_layers
+	return taur_tabard_layers*/
 
 /mob/living/carbon/human/update_inv_cloak()
 	remove_overlay(CLOAK_LAYER)
@@ -1093,13 +1093,14 @@ There are several things that need to be remembered:
 				//OV EDIT END
 			if(cloak.alternate_worn_layer == CLOAK_BEHIND_LAYER)
 				overlays_standing[CLOAK_BEHIND_LAYER] = cloak_overlay
-			if(cloak.alternate_worn_layer == UNDER_ARMOR_LAYER)
+			if(!cloak.alternate_worn_layer || cloak.alternate_worn_layer == UNDER_ARMOR_LAYER)
+			/*if(cloak.alternate_worn_layer == UNDER_ARMOR_LAYER) - OV EDIT - We have our own taur layers
 				var/list/taur_tabard_layers = build_taur_tabard_overlay(taur, cloak)
 				if(taur_tabard_layers)
 					overlays_standing[UNDER_ARMOR_LAYER] = list(cloak_overlay) + taur_tabard_layers
 				else
 					cloaklays += cloak_overlay
-			else if(!cloak.alternate_worn_layer)
+			else if(!cloak.alternate_worn_layer)*/
 				cloaklays += cloak_overlay
 
 			//add sleeve overlays, then offset
@@ -1128,8 +1129,9 @@ There are several things that need to be remembered:
 
 			apply_offset(cloak_overlay, OFFSET_CLOAK, OFFSET_CLOAK_F)
 			if(backr.alternate_worn_layer == TABARD_LAYER)
-				var/list/taur_tabard_layers = build_taur_tabard_overlay(taur, backr)
-				overlays_standing[TABARD_LAYER] = taur_tabard_layers ? (list(cloak_overlay) + taur_tabard_layers) : cloak_overlay
+				overlays_standing[TABARD_LAYER] = cloak_overlay
+				/*var/list/taur_tabard_layers = build_taur_tabard_overlay(taur, backr) - OV EDIT - We have our own taur stuff AAA
+				overlays_standing[TABARD_LAYER] = taur_tabard_layers ? (list(cloak_overlay) + taur_tabard_layers) : cloak_overlay*/
 			if(backr.alternate_worn_layer == CLOAK_BEHIND_LAYER)
 				overlays_standing[CLOAK_BEHIND_LAYER] = cloak_overlay
 			if(!backr.alternate_worn_layer)

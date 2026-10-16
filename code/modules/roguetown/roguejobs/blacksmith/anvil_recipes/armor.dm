@@ -1932,7 +1932,7 @@
 	display_category = ITEM_CAT_ARMOR_BARDING
 
 // Saiga-taur barding - worn by the player-controlled saiga-taur race, not to be confused with the mount barding above.
-/datum/anvil_recipe/armor/steel/saigataurbarding_chain
+/*/datum/anvil_recipe/armor/steel/saigataurbarding_chain - OV EDIT - We have our own system
 	name = "Saiga-taur Barding, Chainmail (+1 Steel)"
 	req_bar = /obj/item/ingot/steel
 	additional_items = list(/obj/item/ingot/steel)
@@ -1968,7 +1968,7 @@
 	name = "Saiga-taur Barding, Plate (Bronze)"
 	req_bar = /obj/item/ingot/bronze
 	created_item = /obj/item/clothing/suit/roguetown/armor/saiga_barding/plate/bronze
-	display_category = ITEM_CAT_ARMOR_BARDING
+	display_category = ITEM_CAT_ARMOR_BARDING*/
 
 /datum/anvil_recipe/armor/steel/barding/fogbeast
 	name = "Fogbeast Barding, Chainmail (+1 Steel)"
