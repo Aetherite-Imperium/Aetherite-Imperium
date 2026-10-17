@@ -887,6 +887,8 @@
         "Xylix's dice box: further improves stat rolling via a new UI. You can
         also roll in chat e.g. *5d20+STR+67/DC100"
 2026-10-17:
+  zeskorion:
+    - code_imp: remove deprecated wrench demolition code
   KatTheFox:
     - bugfix: Transformed werewolves can no longer use the panel
   Quinalion:
