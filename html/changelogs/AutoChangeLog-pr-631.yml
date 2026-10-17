@@ -1,0 +1,4 @@
+author: "zeskorion"
+delete-after: True
+changes:
+  - code_imp: "remove deprecated wrench demolition code"
