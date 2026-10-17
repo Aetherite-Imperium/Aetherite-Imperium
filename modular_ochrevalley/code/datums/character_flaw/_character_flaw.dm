@@ -269,6 +269,7 @@ GLOBAL_LIST_INIT(dendor_touched_animals, list(
 	var/next_check = 0
 	var/check_interval = 10 SECONDS
 	var/warned = 0
+	needs_extra_vice = TRUE
 
 /datum/charflaw/dormancy/on_mob_creation(mob/user)
 	next_check = world.time
