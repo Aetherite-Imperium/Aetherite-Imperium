@@ -1046,7 +1046,7 @@ There are several things that need to be remembered:
 	remove_overlay(CLOAK_LAYER)
 	remove_overlay(CLOAK_BEHIND_LAYER)
 	remove_overlay(TABARD_LAYER)
-	remove_overlay(UNDER_ARMOR_LAYER)
+	//remove_overlay(UNDER_ARMOR_LAYER) //OV EDIT - We have our own stuff
 
 	var/obj/item/bodypart/taur/taur = get_taur_tail()
 	var/icon/c_mask = taur?.clip_mask
@@ -1152,7 +1152,7 @@ There are several things that need to be remembered:
 	update_inv_armor() //fixboob
 	apply_overlay(TABARD_LAYER)
 	apply_overlay(CLOAK_BEHIND_LAYER)
-	apply_overlay(UNDER_ARMOR_LAYER)
+	//apply_overlay(UNDER_ARMOR_LAYER) //OV EDIT - We have our own stuff
 	apply_overlay(CLOAK_LAYER)
 
 /mob/living/carbon/human/update_inv_shirt()
