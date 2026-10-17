@@ -17,7 +17,7 @@ import type { Data } from './types';
 export const starsIf = (text: string, canRead: boolean) =>
   canRead ? text : text.replace(/[A-Za-z0-9]/g, '*');
 
-export const Keymaster = (props: {}) => {
+export const Keymaster = () => {
   const { act, data } = useBackend<Data>();
   const can_read = !!data.can_read;
   const {
