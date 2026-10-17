@@ -4037,6 +4037,7 @@
 #include "modular_causticcove\code\modules\vore\eating\belly_obj.dm"
 #include "modular_causticcove\code\modules\vore\eating\bellymodes_datum_vr.dm"
 #include "modular_causticcove\code\modules\vore\eating\bellymodes_vr.dm"
+#include "modular_causticcove\code\modules\vore\eating\contamination_decal.dm"
 #include "modular_causticcove\code\modules\vore\eating\contaminate_vr.dm"
 #include "modular_causticcove\code\modules\vore\eating\digest_act_vr.dm"
 #include "modular_causticcove\code\modules\vore\eating\dumbass_globals.dm"
