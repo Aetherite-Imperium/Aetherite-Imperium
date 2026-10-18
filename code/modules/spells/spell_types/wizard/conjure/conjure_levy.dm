@@ -45,7 +45,6 @@
 		list("name" = "Raiders", "tag" = "RAI", "loadout" = "raider", "color" = GLOW_COLOR_ARCANE, "invocation" = "Exsurgite, tribum!"),
 		list("name" = "Shieldwall", "tag" = "SHW", "loadout" = "shieldwall", "color" = GLOW_COLOR_ARCANE, "invocation" = "Exsurgite, tribum!"),
 		list("name" = "Slingers", "tag" = "SLG", "loadout" = "sling", "color" = "#cfe8ff", "invocation" = "Exsurgite, tribum!"),
-		list("name" = "Bowmen", "tag" = "BOW", "loadout" = "bow", "color" = "#cfe8ff", "invocation" = "Exsurgite, tribum!"),
 		list("name" = "Spears", "tag" = "SPR", "loadout" = "spear", "color" = GLOW_COLOR_ARCANE, "invocation" = "Exsurgite, tribum!"),
 		list("name" = "Flails", "tag" = "FLL", "loadout" = "flail", "color" = GLOW_COLOR_ARCANE, "invocation" = "Exsurgite, tribum!"),
 	)
