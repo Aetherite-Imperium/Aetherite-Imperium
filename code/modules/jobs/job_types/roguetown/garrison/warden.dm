@@ -20,7 +20,7 @@
 	advclass_cat_rolls = list(CTAG_WARDEN = 20)
 
 	give_bank_account = TRUE
-	min_pq = 0
+	min_pq = 5 //OV EDIT
 	max_pq = null
 	round_contrib_points = 2
 
@@ -31,12 +31,13 @@
 					/datum/advclass/warden/wildsoul,
 					//OV Add End
 					)
+//	has_subprefs = FALSE // only one subclass //OV EDIT - Comented out because yes subclass
 
 /datum/outfit/job/roguetown/warden
 	neck = /obj/item/clothing/neck/roguetown/coif/padded
 	cloak = /obj/item/clothing/cloak/wardencloak
 	backr = /obj/item/storage/backpack/rogue/satchel
-	armor = /obj/item/clothing/suit/roguetown/armor/leather/studded/warden
+	//armor = /obj/item/clothing/suit/roguetown/armor/leather/studded/warden //OV EDIT
 	//gloves = /obj/item/clothing/gloves/roguetown/fingerless_leather //OV Edit
 	belt = /obj/item/storage/belt/rogue/leather
 	beltl = /obj/item/rogueweapon/stoneaxe/woodcut/wardenpick
@@ -89,6 +90,7 @@
 	..()
 	gloves = /obj/item/clothing/gloves/roguetown/fingerless_leather //OV Add
 	shoes = /obj/item/clothing/shoes/roguetown/boots/leather/reinforced //OV Add
+	armor = /obj/item/clothing/suit/roguetown/armor/leather/studded/warden //OV ADD
 	backpack_contents = list(
 		/obj/item/rogueweapon/huntingknife/idagger/warden_machete = 1,
 		/obj/item/storage/keyring/warden = 1,
@@ -119,7 +121,7 @@
 		switch(weapon_choice)
 			if("Bowhunter - Blackhorn Bow + 20 Broadheads")
 				beltr = /obj/item/quiver/arrows
-				backl = /obj/item/gun/ballistic/revolver/grenadelauncher/bow/recurve/warden
+				backl = /obj/item/gun/ballistic/revolver/grenadelauncher/bow/warden
 				H.adjust_skillrank_up_to(/datum/skill/combat/bows, SKILL_LEVEL_MASTER, TRUE)
 			if("Spearhunter - Spear + Sling, +I STR / -I SPD")
 				beltr = /obj/item/quiver/sling/iron
@@ -131,7 +133,7 @@
 				H.change_stat(STATKEY_STR, 1)
 
 		var/helmets = list(
-			"Path of the Antelope" 	= /obj/item/clothing/head/roguetown/helmet/bascinet/antler,
+			"Path of the Antelope"	= /obj/item/clothing/head/roguetown/helmet/bascinet/antler,
 			"Path of the Volf"		= /obj/item/clothing/head/roguetown/helmet/sallet/warden/wolf,
 			"Path of the Ram"		= /obj/item/clothing/head/roguetown/helmet/sallet/warden/goat,
 			"Path of the Bear"		= /obj/item/clothing/head/roguetown/helmet/sallet/warden/bear,
@@ -143,7 +145,7 @@
 			head = helmets[helmchoice]
 
 		var/hoods = list(
-			"Common Shroud" 	= /obj/item/clothing/head/roguetown/roguehood/warden,
+			"Common Shroud"	= /obj/item/clothing/head/roguetown/roguehood/warden,
 			"Antlered Shroud"		= /obj/item/clothing/head/roguetown/roguehood/warden/antler,
 			"None"
 		)

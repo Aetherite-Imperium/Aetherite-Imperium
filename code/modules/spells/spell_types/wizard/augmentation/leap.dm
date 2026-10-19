@@ -3,7 +3,7 @@
 	button_icon = 'icons/mob/actions/mage_augmentation.dmi'
 	name = "Leap"
 	desc = "Empower a target's legs to allow them to leap to great heights for 20 seconds. Does not prevent fall damage."
-	button_icon_state = "leap"
+	button_icon_state = "rune1"
 	sound = 'sound/magic/haste.ogg'
 	spell_color = GLOW_COLOR_BUFF
 	glow_intensity = GLOW_INTENSITY_LOW
@@ -20,6 +20,7 @@
 	invocation_type = INVOCATION_WHISPER
 
 	charge_required = TRUE
+	charge_swingdelay_type = SWINGDELAY_PENALTY
 	charge_time = 1 SECONDS
 	hold_drain = 0
 	charge_slowdown = CHARGING_SLOWDOWN_SMALL

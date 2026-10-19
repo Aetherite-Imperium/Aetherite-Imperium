@@ -25,6 +25,18 @@
 		return TRUE
 	..()
 
+/obj/item/storage/belt/rogue/get_mechanics_examine(mob/user)
+	. = ..()
+	. += span_info("Middle-clicking a belt adjusts its layer..")
+
+/obj/item/storage/belt/rogue/MiddleClick(mob/user)
+	if(!ishuman(user))
+		return
+	var/under_tabard = (alternate_worn_layer != UNDER_TABARD_LAYER)
+	alternate_worn_layer = under_tabard ? UNDER_TABARD_LAYER : initial(alternate_worn_layer)
+	to_chat(user, span_info("I wear [src] [under_tabard ? "under" : "over"] my tabard."))
+	user.update_inv_belt()
+
 /obj/item/storage/belt/rogue/leather
 	name = "belt"
 	desc = "A fine leather strap notched with holes for a buckle to secure itself."
@@ -32,7 +44,6 @@
 	item_state = "leather"
 	equip_sound = 'sound/blank.ogg'
 	sewrepair = TRUE
-	sellprice = 10
 	resistance_flags = FIRE_PROOF
 
 /obj/item/storage/belt/rogue/leather/plaquegold
@@ -51,13 +62,19 @@
 	name = "black belt"
 	icon_state = "blackbelt"
 	item_state = "blackbelt"
-	sellprice = 10
 
 /obj/item/storage/belt/rogue/leather/double
 	name = "pair of belts"
 	desc = "A pair of slim black belts worn around the waist."
 	icon_state = "belt_double"
 	item_state = "belt_double"
+
+
+/obj/item/storage/belt/rogue/leather/beltshawl
+	name = "belt shawl"
+	desc = "A fancy shawl worn around the waist."
+	icon_state = "beltshawl"
+	item_state = "beltshawl"
 
 /obj/item/storage/belt/rogue/leather/plaquesilver
 	name = "plaque belt"
@@ -119,6 +136,22 @@
 
 /obj/item/storage/belt/rogue/leather/battleskirt/breechcloth/red
 	color = CLOTHING_RED
+
+/obj/item/storage/belt/rogue/leather/battleskirt/loincloth
+	name = "cloth loincloth"
+	desc = "A fine leather strap with a crude cloth covering, notched above the loincloth."
+	icon_state = "loincloth"
+	detail_tag = "_detail"
+	detail_color = CLOTHING_WHITE
+
+/obj/item/storage/belt/rogue/leather/battleskirt/loincloth/update_icon()
+	cut_overlays()
+	if(get_detail_tag())
+		var/mutable_appearance/pic = mutable_appearance(icon(icon, "[icon_state][detail_tag]"))
+		pic.appearance_flags = RESET_COLOR
+		if(get_detail_color())
+			pic.color = get_detail_color()
+		add_overlay(pic)
 
 /obj/item/storage/belt/rogue/leather/steel
 	name = "steel belt"
@@ -244,7 +277,6 @@
 	name = "black satchel"
 	icon_state = "bsatchel"
 	item_state = "bsatchel"
-	sellprice = 10
 
 /obj/item/storage/backpack/rogue/attack_right(mob/user)
 	var/datum/component/storage/CP = GetComponent(/datum/component/storage)
@@ -301,7 +333,7 @@
 	component_type = /datum/component/storage/concrete/roguetown/backpack
 
 /obj/item/storage/backpack/rogue/artibackpack
-	name = "Cooling backpack"
+	name = "cooling backpack"
 	desc = "A leather backpack with complex pipework coursing through it. It hums and vibrates constantly."
 	icon_state = "artibackpack"
 	item_state = "artibackpack"
@@ -313,6 +345,7 @@
 	equip_sound = 'sound/blank.ogg'
 	bloody_icon_state = "bodyblood"
 	sewrepair = FALSE
+	anvilrepair = /datum/skill/craft/engineering
 	component_type = /datum/component/storage/concrete/roguetown/backpack
 
 /obj/item/storage/backpack/rogue/backpack/bagpack
@@ -356,7 +389,7 @@
 	else
 		icon_state = "rucksack_untied"
 
-/obj/item/storage/belt/rogue/leather/plaquegold/steward
+/obj/item/storage/belt/rogue/leather/plaquegold/noble
 	name = "fancy gold belt"
 	desc = "A dark belt with real gold making up the buckle and highlights. How bougie."
 	icon_state = "stewardbelt"
@@ -368,8 +401,8 @@
 	desc = "A five-slotted belt meant for tossblades. Little room left over."
 	icon_state = "knife"
 	item_state = "knife"
-	strip_delay = 20
-	var/max_storage = 5			//Javelin bag is 4 and they can't hold items. So, more fair having it like this since these are pretty decent weapons.
+	strip_delay = STRIP_DELAY_FAST
+	var/max_storage = 5		//Javelin bag is 4 and they can't hold items. So, more fair having it like this since these are pretty decent weapons.
 	var/list/knives = list()
 	sewrepair = TRUE
 	component_type = /datum/component/storage/concrete/roguetown/belt/knife_belt
@@ -434,7 +467,7 @@
 		return TRUE
 	return FALSE
 
-/obj/item/storage/belt/rogue/leather/knifebelt/iron/Initialize()
+/obj/item/storage/belt/rogue/leather/knifebelt/iron/Initialize(mapload)
 	. = ..()
 	for(var/i in 1 to max_storage)
 		var/obj/item/rogueweapon/huntingknife/throwingknife/K = new()
@@ -445,49 +478,49 @@
 	icon_state = "blackknife"
 	item_state = "blackknife"
 
-/obj/item/storage/belt/rogue/leather/knifebelt/black/iron/Initialize()
+/obj/item/storage/belt/rogue/leather/knifebelt/black/iron/Initialize(mapload)
 	. = ..()
 	for(var/i in 1 to max_storage)
 		var/obj/item/rogueweapon/huntingknife/throwingknife/K = new()
 		knives += K
 	update_icon()
 
-/obj/item/storage/belt/rogue/leather/knifebelt/black/steel/Initialize()
+/obj/item/storage/belt/rogue/leather/knifebelt/black/steel/Initialize(mapload)
 	. = ..()
 	for(var/i in 1 to max_storage)
 		var/obj/item/rogueweapon/huntingknife/throwingknife/steel/K = new()
 		knives += K
 	update_icon()
 
-/obj/item/storage/belt/rogue/leather/knifebelt/black/silver/Initialize()
+/obj/item/storage/belt/rogue/leather/knifebelt/black/silver/Initialize(mapload)
 	. = ..()
 	for(var/i in 1 to max_storage)
-		var/obj/item/rogueweapon/huntingknife/throwingknife/silver/K = new()
+		var/obj/item/rogueweapon/huntingknife/throwingknife/steel/silver/K = new()
 		knives += K
 	update_icon()
 
-/obj/item/storage/belt/rogue/leather/knifebelt/black/silver_blessed/Initialize()
+/obj/item/storage/belt/rogue/leather/knifebelt/black/silver/preblessed/Initialize(mapload)
 	. = ..()
 	for(var/i in 1 to max_storage)
-		var/obj/item/rogueweapon/huntingknife/throwingknife/silver/preblessed/K = new()
+		var/obj/item/rogueweapon/huntingknife/throwingknife/steel/silver/preblessed/K = new()
 		knives += K
 	update_icon()
 
-/obj/item/storage/belt/rogue/leather/knifebelt/black/psydon/Initialize()
+/obj/item/storage/belt/rogue/leather/knifebelt/black/silver/psy/Initialize(mapload)
 	. = ..()
 	for(var/i in 1 to max_storage)
-		var/obj/item/rogueweapon/huntingknife/throwingknife/psydon/K = new()
+		var/obj/item/rogueweapon/huntingknife/throwingknife/steel/silver/psy/K = new()
 		knives += K
 	update_icon()
 
-/obj/item/storage/belt/rogue/leather/knifebelt/black/psydon_blessed/Initialize()
+/obj/item/storage/belt/rogue/leather/knifebelt/black/silver/psy/preblessed/Initialize(mapload)
 	. = ..()
 	for(var/i in 1 to max_storage)
-		var/obj/item/rogueweapon/huntingknife/throwingknife/psydon/preblessed/K = new()
+		var/obj/item/rogueweapon/huntingknife/throwingknife/steel/silver/psy/preblessed/K = new()
 		knives += K
 	update_icon()
 
-/obj/item/storage/belt/rogue/leather/knifebelt/black/kazengun/Initialize()
+/obj/item/storage/belt/rogue/leather/knifebelt/black/kazengun/Initialize(mapload)
 	. = ..()
 	for(var/i in 1 to max_storage)
 		var/obj/item/rogueweapon/huntingknife/throwingknife/kazengun/K = new()
@@ -574,9 +607,183 @@
 	openspace.zFall(user) // slop?
 
 /obj/item/clothing/wall_grab/intercept_zImpact(atom/movable/AM, levels = 1) // with this shit it doesn't generate "X falls through open space". thank u guppyluxx
-    . = ..()
-    . |= FALL_NO_MESSAGE
+	. = ..()
+	. |= FALL_NO_MESSAGE
 
+/obj/item/rogueweapon/huntingknife/idagger/harpy_talons // OV Add Start
+	name = "talons"
+	desc = "Harpy talons. Birds of prey and all..."
+	experimental_inhand = FALSE
+	icon = 'modular_ochrevalley/icons/roguetown/weapons/misc32.dmi'
+	icon_state = "harpy_talon" // coder kitbash 5 minute sprite ugh
+	drop_sound = 'sound/blank.ogg'
+	gripped_intents = list(/datum/intent/wing/cut, /datum/intent/wing/shred, /datum/intent/wing/pick) // /datum/intent/wing/grab - temporarily removed until a fix for the INFINITE FLOAT bug is figured out.
+	associated_skill = /datum/skill/combat/unarmed
+	w_class = WEIGHT_CLASS_HUGE
+	wlength = WLENGTH_GREAT
+	wbalance = WBALANCE_SWIFT
+	sharpness = IS_SHARP // For butchering!
+	twohands_required = TRUE
+	force = 20
+	wdefense = 0 // Technically unarmed. Wear bracers to parry.
+	max_blade_int = 200
+	max_integrity = 250
+	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
+	no_effect = FALSE
+	pickup_sound = 'sound/blank.ogg'
+
+	var/repair_amount = 5 //The amount of integrity the tattoos will repair themselves
+	var/repair_time = 250 //The amount of time between each repair
+	var/last_repair //last time the tattoos got repaired
+
+/obj/item/rogueweapon/huntingknife/idagger/harpy_talons/take_damage(damage_amount, damage_type, damage_flag, sound_effect, attack_dir, armor_penetration)
+	. = ..()
+	if(obj_integrity < max_integrity)
+		START_PROCESSING(SSobj, src)
+		return
+
+/obj/item/rogueweapon/huntingknife/idagger/harpy_talons/process()
+	if(obj_integrity >= max_integrity)
+		STOP_PROCESSING(SSobj, src)
+		src.visible_message(span_notice("[src] are in a much better shape now, enough resting!"), vision_distance = 1)
+		return
+	else if(world.time > src.last_repair + src.repair_time)
+		src.last_repair = world.time
+		obj_integrity = min(obj_integrity + src.repair_amount, src.max_integrity)
+	..()
+
+///obj/item/rogueweapon/huntingknife/equipped(mob/user, slot, initial = FALSE) // idk if I should remove the sound, I think it's p neat even if a bit gamey
+
+/datum/intent/wing/cut
+	name = "cut"
+	icon_state = "incut"
+	attack_verb = list("cuts", "slashes")
+	animname = "cut"
+	blade_class = BCLASS_CUT
+	hitsound = list('sound/combat/hits/bladed/smallslash (1).ogg', 'sound/combat/hits/bladed/smallslash (2).ogg', 'sound/combat/hits/bladed/smallslash (3).ogg')
+	penfactor = PEN_NONE
+	chargetime = 0
+	swingdelay = 0
+	clickcd = CLICK_CD_FAST
+	item_d_type = "slash"
+
+/datum/intent/wing/shred
+	name = "shred"
+	icon_state = "inchop"
+	attack_verb = list("shreds")
+	animname = "chop"
+	blade_class = BCLASS_CHOP
+	hitsound = list('sound/combat/hits/bladed/smallslash (1).ogg', 'sound/combat/hits/bladed/smallslash (2).ogg', 'sound/combat/hits/bladed/smallslash (3).ogg')
+	penfactor = PEN_LIGHT
+	damfactor = 1
+	swingdelay = 5
+	clickcd = 10
+	item_d_type = "slash"
+
+/datum/intent/wing/grab
+	name = "talon grab"
+	icon_state = "ingrab"
+	attack_verb = list("digs", "impales")
+	hitsound = list('sound/combat/hits/bladed/genstab (1).ogg', 'sound/combat/hits/bladed/genstab (2).ogg', 'sound/combat/hits/bladed/genstab (3).ogg')
+	penfactor = PEN_LIGHT
+	clickcd = 15
+	swingdelay = 0
+	damfactor = 1
+	blade_class = BCLASS_PICK
+
+/datum/intent/wing/pick
+	name = "talon pick"
+	icon_state = "inpick"
+	attack_verb = list("stabs", "impales")
+	hitsound = list('sound/combat/hits/bladed/genstab (1).ogg', 'sound/combat/hits/bladed/genstab (2).ogg', 'sound/combat/hits/bladed/genstab (3).ogg')
+	penfactor = PEN_MEDIUM
+	clickcd = 14
+	swingdelay = 12
+	damfactor = 1
+	blade_class = BCLASS_PICK
+
+/obj/item/rogueweapon/huntingknife/idagger/harpy_talons/equipped(mob/user, slot, initial)
+	. = ..()
+	wielded = TRUE
+
+/obj/item/rogueweapon/huntingknife/idagger/harpy_talons/attack_self(mob/user)
+	if(user.pulling)
+		var/mob/living/passenger = user.pulling
+		user.stop_pulling()
+		passenger.remove_status_effect(/datum/status_effect/debuff/harpy_passenger)
+		return
+
+/obj/item/rogueweapon/huntingknife/idagger/harpy_talons/Initialize(mapload)
+	. = ..()
+	ADD_TRAIT(src, TRAIT_NOEMBED, TRAIT_GENERIC)
+
+/obj/item/rogueweapon/huntingknife/idagger/harpy_talons/dropped(mob/living/carbon/human/user)
+	. = ..()
+	src.moveToNullspace()
+	if(user.pulling)
+		var/mob/living/passenger = user.pulling
+		user.stop_pulling(TRUE)
+		passenger.remove_status_effect(/datum/status_effect/debuff/harpy_passenger)
+	user.remove_status_effect(/datum/status_effect/debuff/harpy_flight)
+
+/obj/item/rogueweapon/huntingknife/idagger/harpy_talons/intercept_zImpact(atom/movable/AM, levels = 1) // with this shit it doesn't generate "X falls through open space". thank u guppyluxx
+	. = ..()
+	. |= FALL_NO_MESSAGE
+
+/obj/item/rogueweapon/huntingknife/idagger/harpy_talons/attack(mob/living/target, mob/living/carbon/human/user)
+	if(user.used_intent.type == /datum/intent/wing/grab)
+		if(isliving(target))
+			if(target != user)
+				if(user.pulling)
+					user.stop_pulling(TRUE)
+					return ..() // remove ..() if problems arise
+				if(target.checkdefense(user.used_intent, user))
+					return FALSE
+				user.start_pulling(target, state = 1, supress_message = TRUE, item_override = src) // STATE = 1 OH GOD!! GRAB STATE PASSIVE = 0, AGRO = 1
+				/*
+				if(user.grab_state < AGRESSIVE)
+				if(user.pulling)
+					target.grippedby(user, FALSE)
+				*/
+				if(user.pulling)
+					to_chat(user, span_bloody("I am carrying [target] with my talons!! Ha ha ha!!"))
+					var/obj/item/grabbing/I = user.get_inactive_held_item()
+					if(istype(I, /obj/item/grabbing/))
+						I.icon_state = null
+					target.apply_status_effect(/datum/status_effect/debuff/harpy_passenger)
+					user.buckle_mob(target, TRUE, TRUE, FALSE, 0, 0)
+					user.buckle_mob(target, TRUE, TRUE, FALSE, 0, 0) // brute forcing this shit vro..
+					return ..() // remove ..() if problems arise
+	else
+		return ..()
+
+/obj/item/harpy_leg
+	name = "harpy's leg"
+	item_state = "grabbing"
+	icon_state = "grabbing"
+	icon = 'icons/mob/roguehudgrabs.dmi'
+	drop_sound = 'sound/blank.ogg'
+	experimental_inhand = FALSE
+	max_integrity = 10
+	w_class = WEIGHT_CLASS_HUGE
+	item_flags = ABSTRACT
+	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
+	no_effect = TRUE
+
+/obj/item/harpy_leg/Initialize(mapload)
+	. = ..()
+	ADD_TRAIT(src, TRAIT_NODROP, CURSED_ITEM_TRAIT)
+
+/obj/item/harpy_leg/dropped(mob/living/carbon/human/user)
+	. = ..()
+	if(QDELETED(src))
+		return
+	qdel(src)
+
+/obj/item/harpy_leg/intercept_zImpact(atom/movable/AM, levels = 1) // with this shit it doesn't generate "X falls through open space". thank u guppyluxx
+	. = ..()
+	. |= FALL_NO_MESSAGE
+// OV Add End
 /obj/item/storage/hip/orestore/bronze
 	name = "mechanized ore bag"
 	desc = "A becogged bag for sorting and compressing ore, ingots, and gemeralds. It idly ticks to the rhythm of unseen mechanisms, yearning for earthly treats."
@@ -584,7 +791,7 @@
 	//mob_overlay_icon = 'icons/roguetown/clothing/onmob/belts.dmi'
 	icon_state = "rucksack"
 	item_state = "rucksack"
-	slot_flags = ITEM_SLOT_HIP|ITEM_SLOT_BACK 
+	slot_flags = ITEM_SLOT_HIP|ITEM_SLOT_BACK
 	w_class = WEIGHT_CLASS_NORMAL
 	max_integrity = 400
 	equip_sound = 'sound/blank.ogg'
@@ -695,7 +902,7 @@
 	equip_sound = 'sound/blank.ogg'
 	bloody_icon_state = "bodyblood"
 	alternate_worn_layer = UNDER_CLOAK_LAYER
-	strip_delay = 20
+	strip_delay = STRIP_DELAY_FAST
 	component_type = /datum/component/storage/concrete/roguetown/zig_bandolier
 
 /obj/item/storage/belt/rogue/leather/suspenders
@@ -709,3 +916,16 @@
 	desc = "This belt has been sewn out of cloth, as opposed to tied. Which makes it superior. Obviously."
 	icon_state = "clothsash"
 	salvage_result = /obj/item/natural/cloth
+
+/obj/item/storage/belt/rogue/leather/belthooks
+	name = "belt hooks"
+	desc = "Etruscan-designed leather-wrapped hooks with an actuating hinge. To clip things to other things."
+	icon_state = "belthooks"
+	// belt + empty onmob sprite = welcome to fashion 💀
+
+/obj/item/storage/backpack/rogue/satchel/tailchel
+	name = "tail satchel"
+	desc = "Modest, really easy on the shoulders since is tied to your tail, preferred by many to have freedom of movement while holds a respectable amount."
+	icon_state = "tailchel"
+	item_state = "tailchel"
+	icon = 'icons/roguetown/clothing/storage.dmi'

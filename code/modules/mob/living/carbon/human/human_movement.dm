@@ -8,6 +8,7 @@
 				.[id] = data
 
 /mob/living/carbon/human/update_equipment_speed_mods()
+	worn_ac_dirty = TRUE
 	. = ..()
 	update_move_intent_slowdown()
 
@@ -20,11 +21,9 @@
 /mob/living/carbon/human/proc/get_ac_speed()
 	if(HAS_TRAIT(src, TRAIT_ARMOR_NOSPDCAP))
 		return 0
-	var/highest_class = ARMOR_CLASS_NONE
-	for(var/obj/item/clothing/C in list(wear_armor, wear_shirt, wear_pants, head))
-		if(C.armor_class > highest_class)
-			highest_class = C.armor_class
-	switch(highest_class)
+	if(worn_ac_dirty)
+		update_worn_ac_cache()
+	switch(max(cached_body_ac, cached_head_ac))
 		if(ARMOR_CLASS_LIGHT)
 			return AC_LIGHT_SPDCAP
 		if(ARMOR_CLASS_MEDIUM)
@@ -246,7 +245,7 @@
 		return FALSE
 	if(!user.canUseTopic(src, BE_CLOSE, NO_DEXTERITY))
 		return TRUE
-	var/new_pose = tgui_input_text(user, "Set [src]'s pose (MARKDOWN AVAILABLE):", "SET POSE", pose_text, multiline = FALSE, encode = FALSE, bigmodal = TRUE, max_length = 256)
+	var/new_pose = tgui_input_text(user, "Set [src]'s pose (MARKDOWN AVAILABLE):", "SET POSE", pose_text, multiline = FALSE, encode = TRUE, bigmodal = TRUE, max_length = 256)
 	if(isnull(new_pose))
 		return TRUE
 	if(QDELETED(src) || QDELETED(user) || !IsPetrified())

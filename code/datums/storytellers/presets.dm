@@ -1,13 +1,14 @@
 /// Code-defined gamemode presets. These replace the old storyteller gods. Players vote between them (grouped
 /// into three pools - see GAMEMODE_POOL_* in __DEFINES/storytellers.dm) or admins fine-tune the roundstart
-/// antag config directly.
+/// antag config directly. A preset's vote pool is set by preset_pool, independent of its type hierarchy.
 
 /datum/storyteller/gamemode
 	always_votable = TRUE
 	hag_slots = 1
 
 // ----------------------------------------------------------------------------------------------------------
-// Extended - no hard antags, no soft antags; only a lone Hag may appear
+// PSYDON pool - lowest intensity. No hard antags. Extended opens nothing; Low Intensity opens a few wretches.
+// (Low Intensity is defined further down as no_antag/small_wretch but votes in this pool via preset_pool.)
 // ----------------------------------------------------------------------------------------------------------
 /datum/storyteller/gamemode/extended
 	name = "Extended"
@@ -20,7 +21,7 @@
 	block_soft = TRUE
 	allow_dreamwalker = FALSE
 	preferred_gnoll_mode = GNOLL_SCALING_NONE
-	wretch_slot_cap = 0
+	// wretch_slot_cap = 0 // OV Remove
 	roundstart_prob = 0
 	guarantees_roundstart_roleset = FALSE
 	starting_point_multipliers = list(
@@ -61,7 +62,7 @@
 	guarantees_roundstart_roleset = FALSE
 	roundstart_prob = 0
 	preferred_gnoll_mode = GNOLL_SCALING_DYNAMIC	// max 3
-	wretch_slot_cap = 12
+	// wretch_slot_cap = 12  // OV Remove
 
 	starting_point_multipliers = list(
 		EVENT_TRACK_MUNDANE = 1,
@@ -83,7 +84,7 @@
 	)
 
 // ----------------------------------------------------------------------------------------------------------
-// Atleast one main antag will be selected
+// ASCENDANT pool - guaranteed roundstart hard antag. At least one main antag will be selected.
 // ----------------------------------------------------------------------------------------------------------
 /datum/storyteller/gamemode/guaranteed_antag
 	name = "High Intensity"
@@ -92,33 +93,22 @@
 	welcome_text = "A cold dread settles over the town.."
 	color_theme = "#a43c3c"
 	preset_pool = GAMEMODE_POOL_GUARANTEED
-	guaranteed_hard = TRUE
-	guarantees_roundstart_roleset = TRUE
-	roundstart_prob = 100
+	guaranteed_hard = FALSE //OV EDIT
+	guarantees_roundstart_roleset = FALSE //OV Edit
+	roundstart_prob = 80 //100 //OV EDIT
 	block_hard = FALSE
 	block_soft = FALSE
-	allow_dreamwalker = FALSE //OV Edit
+	allow_dreamwalker = TRUE
 	preferred_gnoll_mode = GNOLL_SCALING_FLAT	// max 2
-	wretch_slot_cap = 9
+	// wretch_slot_cap = 9 // OV Remove
 
-/datum/storyteller/gamemode/guaranteed_antag/low_wretch
+// ----------------------------------------------------------------------------------------------------------
+// TEN pool - no hard antags, soft antags only. Standard is the lighter option, Medium the default fallback.
+// ----------------------------------------------------------------------------------------------------------
+/datum/storyteller/gamemode/no_antag	// DEFAULT (inconclusive-vote fallback)
 	name = "Medium Intensity"
-	vote_desc = "Guaranteed hard antagonist of a random variety. A few soft antagonists too."
-	desc = "Guaranteed roundstart hard antag with more aggressive pop scaling. Wretches up to 4. Gnoll max 1. Hag present."
-	color_theme = "#7a1f1f"
-	hard_mult = 2
-	block_soft = FALSE
-	allow_dreamwalker = FALSE
-	preferred_gnoll_mode = GNOLL_SCALING_SINGLE	// max 1
-	wretch_slot_cap = 4
-
-// ----------------------------------------------------------------------------------------------------------
-// Just wretches/gnolls/hags, etc
-// ----------------------------------------------------------------------------------------------------------
-/datum/storyteller/gamemode/no_antag	// DEFAULT
-	name = "Standard Intensity"
 	vote_desc = "No hard antagonists. Soft antagonists scale reasonably."
-	desc = "No hard antags. Wretches scale normally (5 -> 12). Gnolls max 3. Hag present. Dreamwalker may roll."
+	desc = "No hard antags. Wretches scale normally (5 -> 12). Gnolls max 3. Hag present. No dreamwalker."
 	welcome_text = "The warmth of daelight rouses you from your slumber.."
 	color_theme = "#2b8c87"
 	preset_pool = GAMEMODE_POOL_NOANTAG
@@ -126,18 +116,29 @@
 	block_soft = FALSE
 	allow_dreamwalker = FALSE
 	preferred_gnoll_mode = GNOLL_SCALING_DYNAMIC	// max 3
-	wretch_slot_cap = 12
+	// wretch_slot_cap = 12  // OV Remove
 	roundstart_prob = 50
 	guarantees_roundstart_roleset = FALSE
 
+/datum/storyteller/gamemode/no_antag/standard
+	name = "Standard Intensity"
+	vote_desc = "No hard antagonists. A moderate spread of soft antagonists."
+	desc = "No hard antags. Wretches up to 6. Gnolls max 2. Hag present. No dreamwalker."
+	color_theme = "#37b3a6"
+	allow_dreamwalker = FALSE
+	preferred_gnoll_mode = GNOLL_SCALING_FLAT	// max 2
+	// wretch_slot_cap = 6  // OV Remove
+
+// Low Intensity - votes in the PSYDON pool (see preset_pool) despite being a no_antag subtype.
 /datum/storyteller/gamemode/no_antag/small_wretch
 	name = "Low Intensity"
-	vote_desc = "No hard antagonists. Fewer soft antagonists are present.."
-	desc = "No hard antags. Wretches fixed at 5. Gnoll max 1. Hag present. No dreamwalker."
+	vote_desc = "No hard antagonists. Only a handful of soft antagonists are present.."
+	desc = "No hard antags. Wretches fixed at 4. No gnolls. Hag present. No dreamwalker."
 	color_theme = "#1f6b67"
+	preset_pool = GAMEMODE_POOL_EXTENDED
 	allow_dreamwalker = FALSE
-	preferred_gnoll_mode = GNOLL_SCALING_SINGLE	// max 1
-	wretch_slot_cap = 5
+	preferred_gnoll_mode = GNOLL_SCALING_NONE
+	// wretch_slot_cap = 4  // OV Remove
 	roundstart_prob = 0
 
 	starting_point_multipliers = list(

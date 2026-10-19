@@ -19,6 +19,10 @@
 		/datum/sprite_accessory/tail_feature/taur/caustic/deerbelly,
 		/datum/sprite_accessory/tail_feature/taur/biglegs,
 		/datum/sprite_accessory/tail_feature/taur/biglegsstanced,
+		/// OV edit
+		/datum/sprite_accessory/tail_feature/taur/noodle_marking_belly,
+		/datum/sprite_accessory/tail_feature/taur/noodle_marking_tail,
+		/// OV edit end
 	)
 
 /obj/item/organ/tail_feature/taur_markings
@@ -27,13 +31,13 @@
 
 //Taur markings
 /datum/sprite_accessory/tail_feature/taur
-	relevant_layers = list(BODY_BEHIND_LAYER, BODY_FRONT_LAYER)
+	relevant_layers = list(BODY_BEHIND_LAYER, TAURFEATURE_LAYER)
 
 /datum/sprite_accessory/tail_feature/taur/adjust_appearance_list(list/appearance_list, obj/item/organ/organ, obj/item/bodypart/bodypart, mob/living/carbon/owner)
-    generic_gender_feature_adjust(appearance_list, organ, bodypart, owner, OFFSET_TAUR, OFFSET_TAUR_F)
+	generic_gender_feature_adjust(appearance_list, organ, bodypart, owner, OFFSET_TAUR, OFFSET_TAUR_F)
 
 /datum/sprite_accessory/tail_feature/taur/lamia
-	name = "Lamia Taur Markings"	
+	name = "Lamia Taur Markings"
 	icon = 'modular_causticcove/icons/mob/taurs/naga_markings.dmi'
 	icon_state = "naga_markings"
 
@@ -118,11 +122,6 @@
 	icon = 'modular_causticcove/icons/mob/taurs/taurdeer_belly.dmi'
 	icon_state = "taurdeer_belly_s"
 
-
-/datum/sprite_accessory/tail_feature/large_snake
-	icon = 'modular_causticcove/icons/mob/taurs/large_snake_markings.dmi'
-	relevant_layers = list(BODY_BEHIND_LAYER, BODY_FRONT_LAYER)
-
 /datum/sprite_accessory/tail_feature/taur/biglegs
 	name = "Big Legs Marking"
 	icon = 'modular_causticcove/icons/mob/taurs/biglegs_markings.dmi'
@@ -132,3 +131,20 @@
 	name = "Big Legs, Stanced Marking"
 	icon = 'modular_causticcove/icons/mob/taurs/biglegsstanced_markings.dmi'
 	icon_state = "biglegs_stanced"
+
+/// OV edit
+/datum/sprite_accessory/tail_feature/taur/noodle_marking_belly
+	name = "Noodle, Underbelly Marking"
+	icon = 'modular_ochrevalley/icons/mob/taurs/noodle_belly_markings.dmi'
+	icon_state = "noodle_marking_belly"
+
+/datum/sprite_accessory/tail_feature/taur/noodle_marking_tail
+	name = "Noodle, Tail Marking"
+	icon = 'modular_ochrevalley/icons/mob/taurs/noodle_tail_markings.dmi'
+	icon_state = "noodle_marking_tail"
+
+/datum/sprite_accessory/tail_feature/taur/sloogmarkings
+	name = "Slugcat Body Glow Line Marking"
+	icon = 'modular_causticcove/icons/mob/taurs/sloog_markings.dmi'
+	icon_state = "sloog_glowstripe"
+/// OV edit end

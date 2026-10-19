@@ -3,7 +3,7 @@
 	tutorial = "You were once upon a time part of the wild. Now you have taken up the duty to protecting it, whenever because of the safety and curiosity of the settlement that you now serve, longing for a purpose, or merely being part of something greater and a concentrated effort, the safety of the roads for these fragile towners and traders rest in your hands and claws. Keep your cradle safe and free of riff raffs, together with your more civilized allies."
 	outfit = /datum/outfit/job/roguetown/warden/wildsoul
 	category_tags = list(CTAG_WARDEN)
-	traits_applied = list(TRAIT_CRITICAL_RESISTANCE, TRAIT_CIVILIZEDBARBARIAN, TRAIT_STRONGBITE, TRAIT_NATURAL_ARMOR) // Woodsman removed so it doesnt get applied twice. Feral removed, since theyre warden.
+	traits_applied = list(TRAIT_CRITICAL_RESISTANCE, TRAIT_CIVILIZEDBARBARIAN, TRAIT_STRONGBITE, TRAIT_FERAL_MINOR) // OV EDIT - Woodsman removed so it doesnt get applied twice. Feral removed, since theyre warden.
 	subclass_stats = list(
 		STATKEY_STR = 3,//7 points weighted, same as MAA. Direbear stats are kicked in the shins cause they get stat buffs in the woods instead of a debuff in the town.
 		STATKEY_CON = 2,
@@ -36,7 +36,8 @@
 	H.adjust_blindness(-3)
 	shoes = /obj/item/clothing/shoes/roguetown/boots/furlinedanklets
 	beltr = /obj/item/rogueweapon/huntingknife/stoneknife //OV Edit - Warden Sync
-	H.skin_armor = new /obj/item/clothing/suit/roguetown/armor/skin_armor/natural_armor/dense(H)
+	armor = /obj/item/clothing/suit/roguetown/armor/manual/resting/ochre/overskin/fullbody/wildsoul/tame //OV EDIT
+	shirt = /obj/item/clothing/suit/roguetown/armor/manual/resting/ochre/chestskin/wildsoul/tame //OV EDIT
 	gloves = /obj/item/clothing/gloves/roguetown/knuckles //OV Edit added steel knuckles
 	//OV Add Start
 	backpack_contents = list(
@@ -68,19 +69,6 @@
 		var/hoodchoice = input(H, "Choose your Shroud.", "HOOD SELECTION") as anything in hoods
 		if(helmchoice != "None")
 			mask = hoods[hoodchoice]
-
-	var/techniques = list("Dropkick - Pushback + Extra Damage", "Chokeslam - Stamina Damage", "Stunner - Dazed Debuff", "Headbutt - Vulnerable Debuff") // cool wrestling moves
-	var/technique_choice = input(H,"Choose your TECHNIQUE.", "TOSS THEM.") as anything in techniques
-	switch(technique_choice)
-		if("Dropkick - Pushback + Extra Damage")
-			H.mind.AddSpell(new /obj/effect/proc_holder/spell/invoked/dropkick)
-		if("Chokeslam - Stamina Damage")
-			H.mind.AddSpell(new /obj/effect/proc_holder/spell/invoked/chokeslam)
-		if("Stunner - Dazed Debuff")
-			H.mind.AddSpell(new /obj/effect/proc_holder/spell/invoked/stunner)
-		if("Headbutt - Vulnerable Debuff")
-			H.mind.AddSpell(new /obj/effect/proc_holder/spell/invoked/headbutt)
-
 
 /datum/outfit/job/roguetown/warden/wildsoul/proc/give_feral_eyes(mob/living/carbon/human/man)
 	var/obj/item/organ/eyes/eyes = man.getorganslot(ORGAN_SLOT_EYES)

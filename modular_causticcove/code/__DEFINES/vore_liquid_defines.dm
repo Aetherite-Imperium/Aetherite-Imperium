@@ -21,7 +21,7 @@
 #define REAGENT_TEA "Tea"
 #define REAGENT_ID_TEA /datum/reagent/consumable/caffeine/tea
 #define REAGENT_TEA_ROSE "Rose Tea"
-#define REAGENT_ID_TEA_ROSE /datum/reagent/water/rosewater
+#define REAGENT_ID_TEA_ROSE /datum/reagent/consumable/rosewater
 #define REAGENT_TEA_CALENDULA "Golden Calendula Tea"
 #define REAGENT_ID_TEA_CALENDULA /datum/reagent/consumable/golden_calendula_tea
 #define REAGENT_TEA_VALERIAN "Soothing Valerian Tea"
@@ -33,7 +33,7 @@
 #define REAGENT_PARAPOISON "Paralytic venom"
 #define REAGENT_ID_PARAPOISON /datum/reagent/toxin/spidervenom_paralytic
 #define REAGENT_SPACEDRUGS "Druggy venom"
-#define REAGENT_ID_SPACEDRUGS /datum/reagent/drug/space_drugs
+#define REAGENT_ID_SPACEDRUGS /datum/reagent/drug/swampweed
 #define REAGENT_POT_MANA "Mana potion"
 #define REAGENT_ID_POT_MANA /datum/reagent/medicine/manapot
 #define REAGENT_POT_HEALTH "Health potion"
@@ -44,10 +44,6 @@
 // Juices!
 #define REAGENT_JUICE_JACKBERRY "Jackberry juice"
 #define REAGENT_ID_JUICE_JACKBERRY /datum/reagent/consumable/juice/jackberry
-#define REAGENT_JUICE_JACKBERRY_POISON "Poisonous Jackberry juice"
-#define REAGENT_ID_JUICE_JACKBERRY_POISON /datum/reagent/consumable/juice/jackberry/poisonous
-#define REAGENT_JUICE_APPLE "Apple juice"
-#define REAGENT_ID_JUICE_APPLE /datum/reagent/consumeable/juice/apple
 #define REAGENT_JUICE_TOMATO "Tomato juice"
 #define REAGENT_ID_JUICE_TOMATO /datum/reagent/consumable/juice/tomato
 #define REAGENT_JUICE_STRAWBERRY "Strawberry juice"
@@ -62,12 +58,8 @@
 #define REAGENT_ID_JUICE_LEMON /datum/reagent/consumable/juice/lemon
 #define REAGENT_JUICE_LIME "Lime juice"
 #define REAGENT_ID_JUICE_LIME /datum/reagent/consumable/juice/lime
-#define REAGENT_JUICE_TANGERINE "Tangerine juice"
-#define REAGENT_ID_JUICE_TANGERINE /datum/reagent/consumable/juice/tangerine
 #define REAGENT_JUICE_PLUM "Plum juice"
 #define REAGENT_ID_JUICE_PLUM /datum/reagent/consumable/juice/plum
-#define REAGENT_JUICE_CARROT "Carrot juice"
-#define REAGENT_ID_JUICE_CARROT /datum/reagent/consumable/juice/carrot
 
 // Alcohols! Mostly just the craftable ones for now. There's a lot... rt_alcohol_reagends.dm
 #define REAGENT_ALCOHOL_BEER "Beer"

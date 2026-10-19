@@ -1,7 +1,7 @@
 /datum/action/cooldown/spell/mindlink
 	button_icon = 'icons/mob/actions/mage_utilities.dmi'
 	name = "Mindlink"
-	desc = "Establish a telepathic link with an ally for three minutes. Use ,Y before a message to communicate telepathically."
+	desc = "Establish a telepathic link with an ally for three minutes. Use ,m before a message to communicate telepathically."
 	button_icon_state = "mindlink"
 	sound = 'sound/magic/whiteflame.ogg'
 	spell_color = GLOW_COLOR_ARCANE
@@ -27,7 +27,7 @@
 	spell_tier = 2
 	spell_impact_intensity = SPELL_IMPACT_NONE
 
-	point_cost = 2
+	point_cost = 3
 
 	spell_requirements = SPELL_REQUIRES_NO_ANTIMAGIC | SPELL_REQUIRES_HUMAN | SPELL_REQUIRES_SAME_Z
 
@@ -61,6 +61,11 @@
 
 	for(var/mob/living/carbon/human/HL in GLOB.human_list)
 		if(HL.real_name == first_target_name)
+			//OV Edit: Block mindlink and message
+			if(HL.client?.prefs.block_mindlink)
+				to_chat(user, span_warning("I seek a mental connection, but can't find [first_target_name]."))
+				return FALSE
+			//OV Edit End
 			first_target = HL
 
 	possible_targets -= first_target_name
@@ -74,6 +79,11 @@
 
 	for(var/mob/living/carbon/human/HL in GLOB.human_list)
 		if(HL.real_name == second_target_name)
+			//OV Edit: Block mindlink and message
+			if(HL.client?.prefs.block_mindlink)
+				to_chat(user, span_warning("I seek a mental connection, but can't find [second_target_name]."))
+				return FALSE
+			//OV Edit End
 			second_target = HL
 
 	for(var/datum/mindlink/ML in GLOB.mindlinks)
@@ -88,8 +98,8 @@
 	var/datum/mindlink/link = new(first_target, second_target)
 	GLOB.mindlinks += link
 
-	to_chat(first_target, span_notice("A mindlink has been established with [second_target]! Use ,Y before a message to communicate telepathically. Use ,mst to break the link."))
-	to_chat(second_target, span_notice("A mindlink has been established with [first_target]! Use ,Y before a message to communicate telepathically. Use ,mst to break the link."))
+	to_chat(first_target, span_notice("A mindlink has been established with [second_target]! Use ,m before a message to communicate telepathically. Use ,mst to break the link."))
+	to_chat(second_target, span_notice("A mindlink has been established with [first_target]! Use ,m before a message to communicate telepathically. Use ,mst to break the link."))
 
 	addtimer(CALLBACK(src, PROC_REF(break_link), link), 3 MINUTES)
 	return TRUE
@@ -98,8 +108,8 @@
 	if(!link)
 		return
 
-	to_chat(link.owner, span_warning("The mindlink with [link.target] fades away..."))
-	to_chat(link.target, span_warning("The mindlink with [link.owner] fades away..."))
+	to_chat(link.owner, span_notice("The mindlink with [link.target] fades away..."))
+	to_chat(link.target, span_notice("The mindlink with [link.owner] fades away..."))
 
 	GLOB.mindlinks -= link
 	qdel(link)

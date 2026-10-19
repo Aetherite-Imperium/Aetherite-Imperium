@@ -52,6 +52,11 @@
 	if(event.stacks >= event.max_stacks)
 		return event
 	event.stacks++
+
+	if(event.stressadd <= -2)
+		for(var/mob/living/carbon/human/L in viewers(2,src))
+			if(L != src && L.has_flaw(/datum/charflaw/addiction/voyeur))
+				L.sate_addiction(/datum/charflaw/addiction/voyeur)
 	return event
 
 /mob/living/carbon/remove_stress(event_type)
@@ -99,17 +104,27 @@
 	else
 		remove_stress(/datum/stressevent/pallid_outdoors)
 
-	if(HAS_TRAIT(src, TRAIT_BLACKBLOOD))
+	if(HAS_TRAIT(src, TRAIT_SUNLIGHT_SENSITIVE) || HAS_TRAIT(src, TRAIT_BLACKBLOOD))
 		var/turf/T = get_turf(src)
 		if(T.can_see_sky() && GLOB.tod == "day")
 			if(HAS_TRAIT(src, TRAIT_WEATHER_PROTECTED))
 				add_stress(/datum/stressevent/lesser_sun_sensitivity)
 			else
-				add_stress(/datum/stressevent/sun_sensitivity)
+				if(HAS_TRAIT(src, TRAIT_SUNLIGHT_SENSITIVE))
+					src.set_blurriness(100)
+					apply_status_effect(/datum/status_effect/debuff/badvision)
+					add_stress(/datum/stressevent/sun_sensitivity_dark)
+				else
+					add_stress(/datum/stressevent/sun_sensitivity)
 		else
 			remove_stress(/datum/stressevent/lesser_sun_sensitivity)
 			remove_stress(/datum/stressevent/sun_sensitivity)
+			remove_stress(/datum/stressevent/sun_sensitivity_dark)
+			if(HAS_TRAIT(src, TRAIT_SUNLIGHT_SENSITIVE))
+				src.set_blurriness(0)
+				remove_status_effect(/datum/status_effect/debuff/badvision)
 	else
+		remove_stress(/datum/stressevent/sun_sensitivity_dark)
 		remove_stress(/datum/stressevent/lesser_sun_sensitivity)
 		remove_stress(/datum/stressevent/sun_sensitivity)
 
@@ -173,7 +188,7 @@
 			random_stress_message()
 
 	if(new_stress >= 20)
-		if(!HAS_TRAIT(src, TRAIT_EORAN_CALM) && !HAS_TRAIT(src, TRAIT_EORAN_SERENE))
+		if(!HAS_TRAIT(src, TRAIT_EORAN_CALM) && !HAS_TRAIT(src, TRAIT_EORAN_SERENE) && !HAS_TRAIT(src, TRAIT_BAOTHAN_CALM))
 			roll_streak_freakout()
 	*/
 	//Caustic edit end

@@ -20,17 +20,13 @@
 	has_visual_effects = FALSE
 	sound = null
 	var/order_range = 12
-	var/faction_ordering = FALSE
-
-/datum/action/cooldown/spell/minion_order/lich
-	faction_ordering = TRUE
 
 /datum/action/cooldown/spell/minion_order/cast(atom/cast_on)
 	. = ..()
 	var/faction_tag = "[owner.mind.current.real_name]_faction"
 
-	if(ismob(cast_on) && istype(cast_on, /mob/living/simple_animal))
-		var/mob/living/simple_animal/minion = cast_on
+	if(ismob(cast_on) && (istype(cast_on, /mob/living/simple_animal) || HAS_TRAIT(cast_on, TRAIT_CONJURED_SUMMON)))
+		var/mob/living/minion = cast_on
 		if(faction_tag in minion.faction)
 			process_minions(order_type = "toggle_stance", target = minion, faction_tag = faction_tag)
 			return TRUE
@@ -59,15 +55,20 @@
 	var/msg = ""
 
 	for(var/mob/other_mob in oview(order_range, owner))
-		if(istype(other_mob, /mob/living/simple_animal) && !other_mob.client)
-			var/mob/living/simple_animal/minion = other_mob
+		if((istype(other_mob, /mob/living/simple_animal) || HAS_TRAIT(other_mob, TRAIT_CONJURED_SUMMON)) && !other_mob.client)
+			var/mob/living/minion = other_mob
+			if(!minion.ai_controller)
+				continue
 
-			if((faction_ordering && owner.faction_check_mob(minion)) || (!faction_ordering && faction_tag && (faction_tag in minion.faction)))
+			if(faction_tag && (faction_tag in minion.faction))
 				minion.ai_controller.CancelActions()
 				minion.ai_controller.clear_blackboard_key(BB_FOLLOW_TARGET)
 				minion.ai_controller.clear_blackboard_key(BB_BASIC_MOB_CURRENT_TARGET)
 				minion.ai_controller.clear_blackboard_key(BB_TRAVEL_DESTINATION)
 				minion.ai_controller.clear_blackboard_key(BB_BASIC_MOB_RETALIATE_LIST)
+				minion.ai_controller.clear_blackboard_key(BB_HIGHEST_THREAT_MOB)
+				minion.ai_controller.clear_blackboard_key(BB_CURRENT_PET_TARGET)
+				minion.ai_controller.blackboard[BB_MOB_AGGRO_TABLE] = list()
 				count += 1
 				switch(order_type)
 					if("goto")
@@ -79,6 +80,7 @@
 					if("aggressive")
 						msg = "act on their own."
 					if("attack")
+						minion.ai_controller.set_blackboard_key(BB_CURRENT_PET_TARGET, target)
 						minion.ai_controller.set_blackboard_key(BB_BASIC_MOB_CURRENT_TARGET, target)
 						msg = "attack [target.name] on sight."
 					if("toggle_stance")

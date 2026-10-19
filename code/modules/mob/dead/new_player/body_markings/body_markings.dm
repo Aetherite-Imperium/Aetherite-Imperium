@@ -42,6 +42,14 @@
 
 	return colors
 
+/datum/body_marking/proc/constant_ui_data()
+	return list(
+		"name" = name,
+		"type" = type,
+		"icon" = REF(icon),
+		"icon_state" = icon_state,
+	)
+
 /datum/body_marking/nose
 	icon = 'icons/mob/body_markings/other_markings.dmi'
 	name = "Nose"
@@ -361,14 +369,14 @@
 	icon_state = "bangs"
 	default_color = "FFFFFF"
 	affected_bodyparts = HEAD
-	
+
 /datum/body_marking/small/bangs
 	icon = 'icons/mob/body_markings/other_markings.dmi'
 	name = "Bangs (Volk)"
 	icon_state = "bangs_s"
 	default_color = "FFFFFF"
 	affected_bodyparts = HEAD
-	
+
 /datum/body_marking/bun
 	icon = 'icons/mob/body_markings/other_markings.dmi'
 	name = "Bun"
@@ -403,3 +411,18 @@
 	icon_state = "waist"
 	default_color = "FF0000"
 	affected_bodyparts = CHEST
+// OV Add Start
+/datum/body_marking/harpy_feet_claws
+	icon = 'icons/mob/body_markings/harpy_markings.dmi'
+	name = "Feet Claws"
+	icon_state = "hclaw"
+	affected_bodyparts = LEG_LEFT | LEG_RIGHT
+	default_color = DEFAULT_SECONDARY
+
+/datum/body_marking/harpy_leg
+	icon = 'icons/mob/body_markings/harpy_markings.dmi'
+	name = "Avian Leg Color Override"
+	icon_state = "hleg"
+	affected_bodyparts = LEG_LEFT | LEG_RIGHT
+	default_color = DEFAULT_SECONDARY
+// OV Add End

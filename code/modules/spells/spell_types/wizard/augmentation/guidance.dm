@@ -1,12 +1,22 @@
 /datum/action/cooldown/spell/augment_buff/guidance
 	name = "Guidance"
-	desc = "Makes one's hand travel true, blessing them with arcyne luck in combat. (+20% chance to bypass parry / dodge, +20% chance to parry / dodge)"
+	desc = "Channel arcyne power unto an ally, empowering their next strike to bypass parry and dodge. Works with both weapons and unarmed attacks. \
+		Enable Fellowship Mode (Shift+G) to snap an off-target cast to your nearest fellowship member in range. \
+		Cannot be cast on yourself."
 	button_icon_state = "guidance"
 
-	invocations = list("Ducere")
-	cooldown_time = 60 SECONDS // 100% uptime, by design
+	self_cast_possible = FALSE
 
-	point_cost = 1
+	invocations = list("Vera Manus!")
+	invocation_type = INVOCATION_SHOUT
+	cooldown_time = 22.5 SECONDS
+
+	point_cost = 2
+	charge_required = FALSE // Special
+	charge_time = 0 // Special
+
+	/// How long the empowered strike lingers - longer than Empower Weapon's, so a guided ally has time to close in.
+	var/empowered_duration = 10 SECONDS
 
 /datum/action/cooldown/spell/augment_buff/guidance/cast(atom/cast_on)
 	. = ..()
@@ -20,10 +30,15 @@
 
 	var/mob/living/spelltarget = cast_on
 
-	if(spelltarget != H)
-		H.visible_message("[H] mutters an incantation and [spelltarget] briefly shines orange.")
-	else
-		H.visible_message("[H] mutters an incantation and they briefly shine orange.")
-	apply_buff_to(spelltarget, /datum/status_effect/buff/guidance, STAT_BUFF_SELF_DURATION)
+	if(spelltarget.has_status_effect(/datum/status_effect/buff/empowered_strike))
+		to_chat(H, span_warning("[spelltarget]'s weapon is already empowered!"))
+		H.balloon_alert(H, "already empowered!")
+		return FALSE
+
+	spelltarget.apply_status_effect(/datum/status_effect/buff/empowered_strike, empowered_duration)
+
+	H.visible_message("[H] mutters an incantation and [spelltarget]'s weapon flares with a violent red glow!")
+	to_chat(H, span_notice("I guide [spelltarget]'s strike - their next will not be denied."))
+	to_chat(spelltarget, span_notice("[H]'s guidance empowers my weapon - my next strike will not be denied!"))
 
 	return TRUE
