@@ -8,3 +8,9 @@
 	if(player.ckey != SUPREME_EMPRESS_CKEY)
 		return FALSE
 	return TRUE
+
+// Only Supreme Empress Aether may play as the Supreme Empress
+/datum/job/roguetown/lord/special_job_latejoin(client/player)
+	if(player.ckey != SUPREME_EMPRESS_CKEY)
+		return FALSE
+	return TRUE

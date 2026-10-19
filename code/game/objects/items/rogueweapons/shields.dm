@@ -97,9 +97,13 @@
 	item_d_type = "blunt"
 
 /datum/intent/shield/block/prewarning()
-	if(mastermob)
-		mastermob.visible_message(span_warning("[mastermob] raises [masteritem]!"))
-		playsound(mastermob, pick('sound/combat/shieldraise.ogg'), 100, FALSE)
+	if(!mastermob || mastermob.next_move > world.time)
+		return
+	if(last_prewarning_sound > world.time)
+		return
+	last_prewarning_sound = world.time + clickcd
+	mastermob.visible_message(span_warning("[mastermob] raises [masteritem]!"))
+	playsound(mastermob, pick('sound/combat/shieldraise.ogg'), 100, FALSE)
 
 /datum/intent/shield/block/metal
 	hitsound = list('sound/combat/parry/shield/metalshield (1).ogg')
@@ -164,7 +168,7 @@
 - #B8B8B8, #C2C2C2, #CCCCCC, #D6D6D6, #E2E2E2, #EFEFEF, #FFFFFF
 - For kite shield I specifically applied dark edges to the side to create the illusion of edge
 - This was done with Aseprite's Replace Color tool. Wooden Shield has 7 colors, Kite & Heater had 8, and Iron had something like 15. I compressed the rest's range.
-- Iron Shield had like 7 colors that were just a tiny variation with one pixel it felt like - so I just compressed literally all of them into E2E2E2 with no actual loss of fidelity. 
+- Iron Shield had like 7 colors that were just a tiny variation with one pixel it felt like - so I just compressed literally all of them into E2E2E2 with no actual loss of fidelity.
 - If you want edge, boss, rims etc. to be dynamically excluded just paint them transparent.
 - This applies a shading and 3D depth to a flat heraldry, and allows us to in the future uses heraldry across multiple shields. For now, since I have no art skills I cannot retroactively convert the existing per shield heraldry to a flat heraldry that is then, applied dynamically on top.
 - But once artist catch up to my work this will enables us to share 1 heraldry across 4 or more shields with very simple work.
@@ -355,6 +359,7 @@
 	parrysound = list('sound/combat/parry/shield/towershield (1).ogg','sound/combat/parry/shield/towershield (2).ogg','sound/combat/parry/shield/towershield (3).ogg')
 	max_integrity = 280
 	anvilrepair = /datum/skill/craft/weaponsmithing
+	smeltresult = /obj/item/ingot/iron
 
 /obj/item/rogueweapon/shield/tower/holysee
 	name = "decablessed shield"
@@ -364,7 +369,7 @@
 	throwforce = 10
 	throw_speed = 1
 	throw_range = 3
-	possible_item_intents = list(SHIELD_BASH_METAL, SHIELD_BLOCK, SHIELD_SMASH_METAL)	
+	possible_item_intents = list(SHIELD_BASH_METAL, SHIELD_BLOCK, SHIELD_SMASH_METAL)
 	wlength = WLENGTH_NORMAL
 	resistance_flags = null
 	flags_1 = CONDUCT_1
@@ -373,6 +378,7 @@
 	attacked_sound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
 	parrysound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
 	max_integrity = 330
+	smeltresult = /obj/item/ingot/steelholy
 
 /obj/item/rogueweapon/shield/tower/holysee/MiddleClick(mob/user, params)
 	. = ..()
@@ -398,7 +404,7 @@
 
 /obj/item/rogueweapon/shield/tower/metal
 	name = "kite shield"
-	desc = "A kite-shaped iron shield. Reliable and sturdy."
+	desc = "A kite-shaped steel shield. Reliable and sturdy."
 	icon_state = "kitesh"
 	force = 20
 	throwforce = 10
@@ -415,6 +421,7 @@
 	parrysound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
 	max_integrity = 280
 	anvilrepair = /datum/skill/craft/weaponsmithing
+	smeltresult = /obj/item/ingot/steel
 
 /obj/item/rogueweapon/shield/tower/metal/getonmobprop(tag)
 	if(tag)
@@ -433,9 +440,9 @@
 	smeltresult = /obj/item/ingot/component/zizo
 
 /obj/item/rogueweapon/shield/tower/metal/zizo/get_examine_highlight_status()
-	return list(EXAMINEHIGHLIGHT_HERESYSEVERITY_ALARMING, "An alloy of Zizo's anointed metals; Avantyne and Darksteel")
+	return list(EXAMINEHIGHLIGHT_HERESYSEVERITY_ALARMING, HERESYDESC_ZIZO_WEAPON)
 
-/obj/item/rogueweapon/shield/tower/metal/zizo/Initialize()
+/obj/item/rogueweapon/shield/tower/metal/zizo/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/cursed_item, TRAIT_CABAL, "SHIELD")
 
@@ -473,40 +480,36 @@
 	unenchantable = TRUE
 
 /obj/item/rogueweapon/shield/tower/metal/psy
-	name = "Covenant"
+	name = "\"Covenant\""
 	desc = "'A Psydonian endures. A Psydonian preserves themselves. A Psydonian preserves His flock.' </br>A blessed silver pavise, capable of thwarting the deadliness of \
 	even the hottest balefires. The one who wields it shall never falter; and the ones behind them shall never suffer."
 	icon_state = "psyshield"
-	force = 15
-	throwforce = 5
+	force = 25
+	throwforce = 20
 	throw_speed = 1
 	throw_range = 3
 	possible_item_intents = list(SHIELD_BASH_METAL, SHIELD_BLOCK, SHIELD_SMASH_METAL)
 	wlength = WLENGTH_NORMAL
 	resistance_flags = null
 	flags_1 = CONDUCT_1
-	wdefense = 14
+	wdefense = 15
 	coverage = 50
 	attacked_sound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
 	parrysound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
-	max_integrity = 350
+	max_integrity = 380
 	is_silver = TRUE
-	smeltresult = /obj/item/ingot/silver
+	smeltresult = /obj/item/ingot/silverblessed
 
 /obj/item/rogueweapon/shield/tower/metal/psy/ComponentInitialize()
 	AddComponent(\
 		/datum/component/silverbless,\
 		pre_blessed = BLESSING_PSYDONIAN,\
-		silver_type = SILVER_PSYDONIAN,\
-		added_force = -3,\
-		added_blade_int = 0,\
-		added_int = 100,\
-		added_def = 1,\
+		silver_type = SILVER_PSYDONIAN\
 	)
 
 /obj/item/rogueweapon/shield/tower/metal/alloy
 	name = "decrepit shield"
-	desc = "A hefty tower shield, wrought from frayed bronze. Looped with dried kelp and reeking of saltwater, you'd assume that this had been fished \
+	desc = "A hefty tower shield, wrought from rotted metal. Looped with dried kelp and reeking of saltwater, you'd assume that this had been fished \
 	out from the remains of a long-sunken warship.. alongside its former legionnaire."
 	max_integrity = 120
 	wdefense = 9
@@ -616,7 +619,7 @@
 
 // unique, better buckler for champion
 /obj/item/rogueweapon/shield/buckler/banneret
-	name = "'Aegis'"
+	name = "\"Aegis\""
 	desc = "A special buckler made out of blacksteel for the Knight Banneret, adorned with a crest. An inscription along the top reads,\"RUAT CAELUM\""
 	icon_state = "capbuckler"
 	icon = 'icons/roguetown/weapons/special/captain.dmi'
@@ -661,6 +664,7 @@
 	possible_item_intents = list(SHIELD_SMASH_METAL, SHIELD_BLOCK) // No SHIELD_BASH. Too heavy to swing quickly, or something.
 	max_integrity = 220
 	anvilrepair = /datum/skill/craft/weaponsmithing
+	smeltresult = /obj/item/ingot/iron
 
 /obj/item/rogueweapon/shield/iron/getonmobprop(tag)
 	. = ..()
@@ -675,7 +679,8 @@
 	name = "bone shield"
 	desc = "If they couldn't protect their previous owners, how confident are you in these bones protecting you?"
 	icon_state = "boneshield"
-	smeltresult = null 
+	smeltresult = null
+	materia = list(/datum/materia_aspect/defense, /datum/materia_aspect/death)
 
 /obj/item/rogueweapon/shield/iron/graggar
 	name = "vicious targe"
@@ -685,7 +690,7 @@
 	icon_state = "graggarshield"
 	max_integrity = 300
 
-/obj/item/rogueweapon/shield/iron/graggar/Initialize()
+/obj/item/rogueweapon/shield/iron/graggar/Initialize(mapload)
 	. = ..()
 	AddComponent(/datum/component/cursed_item, TRAIT_HORDE, "SHIELD", "RENDERED ASUNDER")
 
@@ -707,7 +712,7 @@
 	minstr = 11 //Particularly heavy to use as a melee weapon.
 	attacked_sound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
 	parrysound = list('sound/combat/parry/shield/metalshield (1).ogg','sound/combat/parry/shield/metalshield (2).ogg','sound/combat/parry/shield/metalshield (3).ogg')
-	possible_item_intents = list(/datum/intent/shield/block, /datum/intent/mace/smash/shield/metal, /datum/intent/effect/daze) // No SHIELD_BASH. Able to inflict Daze due to its weight. 
+	possible_item_intents = list(/datum/intent/shield/block, /datum/intent/mace/smash/shield/metal, /datum/intent/effect/daze) // No SHIELD_BASH. Able to inflict Daze due to its weight.
 	max_integrity = 260
 	anvilrepair = /datum/skill/craft/weaponsmithing
 
@@ -729,7 +734,7 @@
 	max_integrity = 360 //Highest integrity and passive projectile-blocking chance of most non-unique shields.
 	possible_item_intents = list(/datum/intent/shield/block, /datum/intent/mace/smash/shield/metal/great, /datum/intent/effect/daze) // No SHIELD_BASH. Able to inflict Daze due to its weight.
 	force = 28
-	coverage = 75 
+	coverage = 75
 	wdefense = 10
 	minstr = 12 //Requires a natural +STR modifier or statpack to double as a melee weapon, for its given class. Note that it has a heavier charge time and active stamina drain, too, as.. well, it's quite heavy.
 
@@ -831,3 +836,16 @@
 	max_integrity = 360 //20% more integrity. It's unique and race-locked.
 	sellprice = 60
 	smeltresult = /obj/item/ingot/steel
+
+/obj/item/rogueweapon/shield/tower/metal/blacksteel
+	name = "blacksteel shield"
+	desc = "A magnificent kite shield of blacksteel. Be it knight-or-knave, those who have the strength to lift it shall yet stand against perdition."
+	icon_state = "blacksteelsh"
+	max_integrity = 400
+	force = 25
+	throwforce = 20
+	coverage = 60
+	smeltresult = /obj/item/ingot/blacksteel
+	possible_item_intents = list(/datum/intent/shield/bash/metal, /datum/intent/shield/block, /datum/intent/mace/smash/shield/metal, /datum/intent/effect/daze)
+	minstr = 11
+	wdefense = 13

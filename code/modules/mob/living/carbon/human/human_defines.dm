@@ -12,12 +12,17 @@
 	buckle_lying = FALSE
 	mob_biotypes = MOB_ORGANIC|MOB_HUMANOID
 	var/taints_loot = FALSE
+	/// Whether this character has spent their one-time natural-claw appearance choice.
+	var/cosmetic_claws_configured = FALSE
+	/// Cosmetic claw presentation copied onto an ordinary punch intent. Keeping INTENT_HARM's exact type to safekeep every hand interaction.
+	var/cosmetic_claw_intent
+	/// Selected hit and miss sounds for the cosmetic claw-punch intent.
+	var/cosmetic_claw_hitsound = "bluntwooshmed"
+	var/cosmetic_claw_miss_sound = "bluntwooshmed"
 
 	ambushable = 1
 
 	voice_pitch = 1
-	/// This is probably dead code, but moved to human_defines and I learned to hate people who deatomize it. It's war now.
-	var/char_accent = "No accent"
 
 	var/footstep_type = FOOTSTEP_MOB_HUMAN
 
@@ -34,7 +39,7 @@
 	//Eye colour
 	var/eye_color = "000"
 
-	var/voice_color = "a0a0a0"
+	var/voice_color = "#a0a0a0"
 	var/nickname = "Please Change Me"
 	var/highlight_color = "#FF0000"
 	var/detail_color = "000"
@@ -49,15 +54,9 @@
 
 	var/age = "Adult"		//Player's age
 
-	var/accessory = "None"
-	var/detail = "None"
-	var/marking = "None"
-	
 	var/shavelevel = 0
 	var/breathe_tick = 0 // Used for gas mask delays.
 	var/socks = "Nude" //Which socks the player wants
-	var/backpack = DBACKPACK		//Which backpack type the player has chosen.
-	var/jumpsuit_style = PREF_SUIT		//suit/skirt
 
 	//Equipment slots
 	var/obj/item/clothing/skin_armor = null
@@ -74,6 +73,12 @@
 	var/obj/item/cloak = null
 	var/obj/item/clothing/wear_shirt = null
 
+	var/cached_worn_ac = ARMOR_CLASS_NONE
+	var/cached_head_ac = ARMOR_CLASS_NONE
+	var/cached_hands_ac = ARMOR_CLASS_NONE
+	var/cached_body_ac = ARMOR_CLASS_NONE
+	var/worn_ac_dirty = TRUE
+
 	var/special_voice = "" // For changing our voice. Used by a symptom.
 
 	var/name_override //For temporary visible name changes
@@ -85,7 +90,11 @@
 
 	var/list/datum/bioware = list()
 
-	var/static/list/can_ride_typecache = typecacheof(list(/mob/living/carbon/human))
+	var/static/list/can_ride_typecache = typecacheof(list( // OV Edit - This is expanded for harpies to be able to combat grab and drop hostile NPCs via flight. A disabled mechanic, until its re-coded due to a z-drop bug.
+		/mob/living/carbon/human,
+		/mob/living/simple_animal/hostile,
+		/mob/living/carbon/human/species/goblin,
+	))
 	var/lastpuke = 0
 	var/last_fire_update
 
@@ -116,6 +125,8 @@
 	var/datum/inspiration/inspiration = null
 
 	var/headshot_link = null
+	var/headshot_artist_credit = null
+	var/headshot_artist_link = null
 	var/standard_headshot_link = null //used to store headshots when swapping for antag ones
 	var/flavortext = null
 	/// For setpose
@@ -135,12 +146,16 @@
 	var/nsfwflavortext_cached = ""
 	var/ooc_notes_cached = ""
 	var/erpprefs_cached = ""
+	var/rumour_cached = ""
+	var/noble_gossip_cached = ""
 
 	/// Per-character theme override for examine panel viewers
 	var/examine_theme
 	var/list/img_gallery = list()
 	var/list/nsfw_img_gallery = list()
-	
+
+	var/ooc_extra_img
+	var/nsfw_ooc_extra_img
 
 	possible_rmb_intents = list(/datum/rmb_intent/feint,\
 	/datum/rmb_intent/aimed,\
@@ -153,8 +168,6 @@
 
 	var/voice_type = null // LETHALSTONE EDIT: defines what sound pack we use. keep this null so mobs resort to their typical gender typing - preferences set this
 	var/datum/statpack/statpack = null // Lethalstone Port - statpacks for greater customization
-	var/second_voice	// Virtue-specific. Can be swapped to / from and changed.
-	var/original_voice
 	//setting up vars for vampire color values
 	var/vampire_skin = null
 	var/vampire_eyes = null
@@ -162,14 +175,20 @@
 	var/vampire_ears = null
 	///An alternative headshot link that can be used when users want to use it for a special role like while a vampire, werewolf, bandit, etc.
 	var/vampire_headshot_link
+	var/vampire_headshot_artist_credit
+	var/vampire_headshot_artist_link
 	var/lich_headshot_link
+	var/lich_headshot_artist_credit
+	var/lich_headshot_artist_link
 	//setting up the hooks for this, but not shown yet
 	var/werewolf_headshot_link
-	// OC Edit Start -- Also using werewolf_headshot_link.
+	var/werewolf_headshot_artist_credit
+	var/werewolf_headshot_artist_link
+	// OV ADD START -- Also using werewolf_headshot_link.
 	var/werewolf_setname
 	var/werewolf_setdesc
 	var/werewolf_setdesc_cached
-	// OC Edit End
+	// OV ADD END
 
 	/// Whether our FOV cone is overridden to be hidden. Simple bool.
 	var/viewcone_override
@@ -184,8 +203,9 @@
 	/// Ref to orison-like sunder object
 	var/sunder_light_obj = null
 
-	/// Assoc list of culinary preferences of the mob
-	var/list/culinary_preferences = list()
+	var/favorite_cuisine = NONE
+	var/favorite_dish = NONE
+	var/favorite_drink = NONE
 
 	/// List of mobs that have attacked us. Only relevant to someone with TRAIT_TEMPO.
 	var/list/tempo_attackers = list()
@@ -201,7 +221,6 @@
 	var/list/curses = list()
 	COOLDOWN_DECLARE(priest_announcement)
 	COOLDOWN_DECLARE(guildmaster_announcement) //This is not for priest but if you are looking for GUILDMASTER announcements it's here, more so convinence than anything.
-	COOLDOWN_DECLARE(crier_announcement)
 	COOLDOWN_DECLARE(priest_sermon)
 	COOLDOWN_DECLARE(priest_apostasy)
 	COOLDOWN_DECLARE(priest_excommunicate)
@@ -231,3 +250,4 @@
 	//Caustic Edit
 	var/time_of_last_move = 0
 	//Caustic Edit End
+

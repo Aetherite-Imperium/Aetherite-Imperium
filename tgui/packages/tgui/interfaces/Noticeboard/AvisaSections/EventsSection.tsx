@@ -10,7 +10,7 @@ import {
   SEAL_RED,
   SERIF,
 } from '../../common/parchment';
-import { type EconomicEvent, type NoticeboardData } from '../types';
+import type { EconomicEvent, NoticeboardData } from '../types';
 
 const eventGridStyle: React.CSSProperties = {
   display: 'grid',
@@ -22,9 +22,7 @@ const eventGridStyle: React.CSSProperties = {
 export const EventsSection = ({ data }: { data: NoticeboardData }) => {
   const events = data.economic_events ?? [];
   if (events.length === 0) {
-    return (
-      <EmptyMessage text="The realm's trade is calm. No events disturb the markets." />
-    );
+    return <EmptyMessage text="No events are affecting the markets." />;
   }
   return (
     <div style={eventGridStyle}>

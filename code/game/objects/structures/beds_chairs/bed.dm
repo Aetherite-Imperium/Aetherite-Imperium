@@ -1,6 +1,6 @@
 /* Beds... get your mind out of the gutter, they're for sleeping!
  * Contains:
- * 		Beds
+ *		Beds
  *		Roller beds
  */
 
@@ -72,7 +72,7 @@
 	else
 		return ..()
 
-/obj/strucutre/bed/post_buckle_mob(mob/living/M)
+/obj/structure/bed/post_buckle_mob(mob/living/M)
 	. = ..()
 	M.update_cone_show()
 

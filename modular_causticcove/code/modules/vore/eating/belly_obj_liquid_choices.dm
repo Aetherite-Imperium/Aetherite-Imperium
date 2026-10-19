@@ -14,7 +14,7 @@
 			if(reagent_name in our_reagents)
 				reagent_name = lowertext(REAGENT_WATER)
 			gen_amount = 2
-			gen_cost = 0
+			gen_cost = 1
 			reagentid = REAGENT_WATER
 			reagentcolor = "#0064C877"
 		if(REAGENT_WATER_BATH)
@@ -122,7 +122,7 @@
 			reagentid = REAGENT_SPACEDRUGS
 			reagentcolor = "#60A584"
 		if(REAGENT_POT_MANA)
-			generated_reagents = list(REAGENT_ID_POT_MANA = 1)
+			generated_reagents = list(REAGENT_ID_WATER = 1) //OV EDIT non-exisiting option, just defaults to water
 			if(reagent_name in our_reagents)
 				reagent_name = lowertext(REAGENT_POT_MANA)
 			gen_amount = 1
@@ -130,7 +130,7 @@
 			reagentid = REAGENT_POT_MANA
 			reagentcolor = "#000042"
 		if(REAGENT_POT_HEALTH)
-			generated_reagents = list(REAGENT_ID_POT_HEALTH = 1)
+			generated_reagents = list(REAGENT_ID_WATER = 1) //OV EDIT non-exisiting option, just defaults to water
 			if(reagent_name in our_reagents)
 				reagent_name = lowertext(REAGENT_POT_HEALTH)
 			gen_amount = 1
@@ -153,22 +153,6 @@
 			gen_cost = 20
 			reagentid = REAGENT_JUICE_JACKBERRY
 			reagentcolor = "#F1EBDB"
-		if(REAGENT_JUICE_JACKBERRY_POISON)
-			generated_reagents = list(REAGENT_ID_JUICE_JACKBERRY_POISON = 1)
-			if(reagent_name in our_reagents)
-				reagent_name = lowertext(REAGENT_JUICE_JACKBERRY_POISON)
-			gen_amount = 1
-			gen_cost = 100
-			reagentid = REAGENT_JUICE_JACKBERRY_POISON
-			reagentcolor = "#F1EBDB"
-		if(REAGENT_JUICE_APPLE)
-			generated_reagents = list(REAGENT_ID_JUICE_APPLE = 1)
-			if(reagent_name in our_reagents)
-				reagent_name = lowertext(REAGENT_JUICE_APPLE)
-			gen_amount = 1
-			gen_cost = 5
-			reagentid = REAGENT_JUICE_APPLE
-			reagentcolor = "#D7B086"
 		if(REAGENT_JUICE_TOMATO)
 			generated_reagents = list(REAGENT_ID_JUICE_TOMATO = 1)
 			if(reagent_name in our_reagents)
@@ -225,14 +209,6 @@
 			gen_cost = 5
 			reagentid = REAGENT_JUICE_LIME
 			reagentcolor = "#00FF00"
-		if(REAGENT_JUICE_TANGERINE)
-			generated_reagents = list(REAGENT_ID_JUICE_TANGERINE = 1)
-			if(reagent_name in our_reagents)
-				reagent_name = lowertext(REAGENT_JUICE_TANGERINE)
-			gen_amount = 1
-			gen_cost = 5
-			reagentid = REAGENT_JUICE_TANGERINE
-			reagentcolor = "#FFA500"
 		if(REAGENT_JUICE_PLUM)
 			generated_reagents = list(REAGENT_ID_JUICE_PLUM = 1)
 			if(reagent_name in our_reagents)
@@ -241,14 +217,6 @@
 			gen_cost = 5
 			reagentid = REAGENT_JUICE_PLUM
 			reagentcolor = "#8B008B"
-		if(REAGENT_JUICE_CARROT)
-			generated_reagents = list(REAGENT_ID_JUICE_CARROT = 1)
-			if(reagent_name in our_reagents)
-				reagent_name = lowertext(REAGENT_JUICE_CARROT)
-			gen_amount = 1
-			gen_cost = 5
-			reagentid = REAGENT_JUICE_CARROT
-			reagentcolor = "#ed9121"
 		if(REAGENT_ALCOHOL_BEER)
 			generated_reagents = list(REAGENT_ID_ALCOHOL_BEER = 1)
 			if(reagent_name in our_reagents)

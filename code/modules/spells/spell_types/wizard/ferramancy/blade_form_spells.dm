@@ -33,11 +33,10 @@
 	/// Selectable forms, cycled with Shift+G. Each: label, weapon path, invocation.
 	var/list/forms = list(
 		list("label" = "Khopesh", "weapon" = /obj/item/rogueweapon/sword/sabre/ferramancy, "say" = "Forma Falx!"),
-		list("label" = "Rapier", "weapon" = /obj/item/rogueweapon/sword/rapier/ferramancy, "say" = "Forma Acus!"),
+		list("label" = "Dagger", "weapon" = /obj/item/rogueweapon/huntingknife/idagger/steel/ferramancy, "say" = "Forma Pugio!"),
 		list("label" = "Greatsword", "weapon" = /obj/item/rogueweapon/greatsword/ferramancy, "say" = "Forma Ferrum!"),
 		list("label" = "Greataxe", "weapon" = /obj/item/rogueweapon/greataxe/steel/doublehead/ferramancy, "say" = "Forma Bipennis!"),
 		list("label" = "Halberd", "weapon" = /obj/item/rogueweapon/halberd/ferramancy, "say" = "Forma Hasta!"),
-		list("label" = "Greatbow", "weapon" = /obj/item/gun/ballistic/revolver/grenadelauncher/bow/greatbow, "say" = "Forma Arcus!"),
 	)
 
 /datum/action/cooldown/spell/form_blade/cast(atom/cast_on)
@@ -56,7 +55,8 @@
 		to_chat(H, span_warning("I need a free hand to shape it into this form."))
 		return FALSE
 
-	invocations = list(f["say"])
+	if(f["say"])
+		invocations = list(f["say"])
 	var/obj/item/W = new weapon_type(H.drop_location())
 	if(W.max_integrity)
 		W.max_integrity = round(W.max_integrity * 0.5)

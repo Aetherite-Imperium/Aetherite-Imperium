@@ -27,6 +27,9 @@
 /obj/item/organ/snout/tajaran
 	name = "tajaran snout"
 
+/obj/item/organ/snout/moth
+	name = "fluvian snout"
+
 /obj/item/organ/snout/cat
 	name = "cat snout"
 	accessory_type = /datum/sprite_accessory/snout/cat
@@ -40,3 +43,8 @@
 
 /obj/item/organ/snout/lizard/psy_vault_guard
 	accessory_type = /datum/sprite_accessory/snout/round
+
+/obj/item/organ/snout/harpy // OV Add
+	name = "harpy beak"
+	desc = "Thine cruelty knows no bounds, vile cur..."
+	accessory_type = /datum/sprite_accessory/snout/bird

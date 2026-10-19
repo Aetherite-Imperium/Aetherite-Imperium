@@ -130,7 +130,7 @@
 			direction = directions[direction]
 			var/target_tile = target.loc
 			for (var/i = 0; i < 10; i++)
-				var/turf/next_tile = get_step(target_tile, direction) 
+				var/turf/next_tile = get_step(target_tile, direction)
 				if (!next_tile)
 					break
 				target_tile = next_tile
@@ -199,7 +199,7 @@
 				return
 			target.overlay_fullscreen("scrolls", /atom/movable/screen/fullscreen/scrolls, 1)
 			addtimer(CALLBACK(target, TYPE_PROC_REF(/mob, clear_fullscreen), "scrolls"), 20 SECONDS)
-		
+
 		if("item_tf")
 			var/mob/living/M = target
 
@@ -208,7 +208,7 @@
 
 			if(!M.ckey)
 				return
-			
+
 			var/target_path = input(ui.user, "Enter typepath:", "Typepath", "/obj/structure/closet")
 			var/objholder = text2path(target_path)
 			if(!ispath(objholder))
@@ -233,7 +233,7 @@
 
 			spawned_obj.mob_possession = M
 			M.forceMove(spawned_obj)
-		
+
 		if("sun_strike")
 			var/turf/target_turf = get_turf(target)
 			to_chat(target, span_warning("Let there be light."))
@@ -494,7 +494,7 @@
 
 			M.tf_into(new_mob)
 
-		
+
 
 		if("elder_smite")
 			if(!target.ckey)
@@ -502,7 +502,7 @@
 			target.overlay_fullscreen("scrolls", /atom/movable/screen/fullscreen/scrolls, 1)
 			addtimer(CALLBACK(target, TYPE_PROC_REF(/mob, clear_fullscreen), "scrolls"), 20 SECONDS)
 
-		
+
 		*/
 
 
@@ -520,7 +520,7 @@
 			if(!istype(Tar))
 				return
 			Tar.reagents.clear_reagents()
-		
+
 		if("give_chem")
 			var/mob/living/carbon/human/Tar = target
 			if(!istype(Tar))
@@ -534,7 +534,7 @@
 			var/amount = tgui_input_number(ui.user, "How much of the chemical would you like to add?", "Amount", 5)
 			if(!amount)
 				return
-			
+
 			Tar.reagents.add_reagent(chemical, amount)
 
 		if("full_heal")
@@ -689,7 +689,7 @@
 			if(location == "Skin")
 				Tar.touching.add_reagent(chem, amount)
 
-		
+
 
 		if("medical_issue")
 			var/mob/living/carbon/human/Tar = target
@@ -711,31 +711,31 @@
 			if(!istype(Tar))
 				return
 			Tar.admin_buff(user, "spell")
-			
+
 		if("order_buffs")
 			var/mob/living/carbon/human/Tar = target
 			if(!istype(Tar))
 				return
 			Tar.admin_buff(user, "order")
-		
+
 		if("divine_buffs")
 			var/mob/living/carbon/human/Tar = target
 			if(!istype(Tar))
 				return
 			Tar.admin_buff(user, "divine")
-		
+
 		if("song_buffs")
 			var/mob/living/carbon/human/Tar = target
 			if(!istype(Tar))
 				return
 			Tar.admin_buff(user, "song")
-		
+
 		if("general_buffs")
 			var/mob/living/carbon/human/Tar = target
 			if(!istype(Tar))
 				return
 			Tar.admin_buff(user, "general")
-		
+
 		/* if("give_spell")
 			var/mob/living/carbon/human/Tar = target
 			if(!istype(Tar))
@@ -744,7 +744,7 @@
 			if(!new_spell)
 				return
 			Tar.AddSpell(new_spell) */
-		
+
 		if("remove_spell")
 			var/mob/living/carbon/human/Tar = target
 			if(!istype(Tar))
@@ -956,12 +956,12 @@
 				A = tgui_input_list(ui.user, "Pick an area to teleport [target] to:", "Jump to Area", GLOB.sortedAreas)
 				target.forceMove(pick(get_area_turfs(A)))
 				log_admin("[key_name(ui.user)] jumped [target] to [A]")
-		
+
 		if("gib")
 			var/death = tgui_alert(ui.user, "Are you sure you want to destroy [target]?", "Gib?", list("KILL", "Cancel"))
 			if(death == "KILL")
 				target.gib()
-		
+
 		if("dust")
 			var/death = tgui_alert(ui.user, "Are you sure you want to destroy [target]?", "Dust?", list("KILL", "Cancel"))
 			if(death == "KILL")
@@ -975,18 +975,58 @@
 
 		if("view_variables")
 			ui.user.client.debug_variables(target)
-		
+
 		if("orbit")
 			if(!ui.user.client.holder.marked_datum)
 				return
 			var/atom/movable/X = ui.user.client.holder.marked_datum
 			X.orbit(target)
-		
+
 		if("make_quest_item")
 			var/mob/living/Tar = target
 			if(!istype(Tar))
 				return
 			Tar.mob_gm_quest(ui.user)
+
+		if("check_traits")
+			var/ht
+			var/mob/living/L = target
+			to_chat(ui.user, "*----*")
+			if(ishuman(target))
+				var/mob/living/carbon/human/M = target
+				if(M.charflaws.len)
+					for(var/datum/charflaw/cf in M.charflaws)
+						var/datum/charflaw/addiction/ad_cf = null
+						if(istype(cf, /datum/charflaw/addiction))
+							ad_cf = cf
+						to_chat(ui.user, span_danger("[cf.name] [ad_cf ? ad_cf.sated ? span_purple("SATED") : "" : ""]"))
+						to_chat(ui.user, span_info("[cf.desc]"))
+					to_chat(M, "*----*")
+				if(M.mind)
+					if(M.mind.language_holder)
+						var/finn
+						for(var/X in M.mind.language_holder.languages)
+							if(!X || !ispath(X, /datum/language))
+								continue
+							var/datum/language/LA = new X()
+							finn = TRUE
+							to_chat(ui.user, "<span class='info'>[LA.name] - ,[LA.key]</span>")
+						if(!finn)
+							to_chat(ui.user, "<span class='warning'>They don't know any languages.</span>")
+						to_chat(M, "*----*")
+			for(var/X in GLOB.roguetraits)
+				if(HAS_TRAIT(L, X))
+					to_chat(ui.user, "[X] - <span class='info'>[GLOB.roguetraits[X]]</span>")
+					ht = TRUE
+			if(!ht)
+				to_chat(ui.user, "<span class='warning'>They have no special traits.</span>")
+			to_chat(ui.user, "*----*")
+
+		if("far_travel")
+			if(ishuman(target))
+				var/double_check = tgui_alert(ui.user, "Are you sure you want to remove them from the round?", "Far travel", list("Remove Them", "Cancel"))
+				if(double_check == "Remove Them")
+					safe_round_remove(target)
 
 		/*
 		if("quick_nif")
@@ -1134,7 +1174,7 @@
 		if("stop-orbits")
 			if(target.orbiters)
 				qdel(target.orbiters)
-		
+
 		if("clear_all_status")
 			var/mob/living/carbon/human/Tar = target
 			if(!istype(Tar))

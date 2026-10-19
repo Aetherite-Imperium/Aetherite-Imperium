@@ -2,6 +2,7 @@
 	name = "bat"
 	desc = ""
 	icon_state = "bat"
+	item_state = "bat_dead" // looks enough like a bat just chilling out that it makes more sense than the animated one
 	icon_living = "bat"
 	icon_dead = "bat_dead"
 	icon_gib = "bat_dead"
@@ -21,7 +22,7 @@
 	attack_verb_continuous = "bites"
 	attack_verb_simple = "bite"
 	butcher_results = list(/obj/item/reagent_containers/food/snacks/rogue/meat/steak = 1)
-	pass_flags = PASSTABLE | PASSGRILLE | PASSMOB
+	pass_flags = PASSTABLE | PASSMOB
 	faction = list(FACTION_HOSTILE)
 	attack_sound = 'sound/blank.ogg'
 	obj_damage = 0
@@ -48,16 +49,17 @@
 	atmos_requirements = list("min_oxy" = 0, "max_oxy" = 0, "min_tox" = 0, "max_tox" = 0, "min_co2" = 0, "max_co2" = 0, "min_n2" = 0, "max_n2" = 0)
 	minbodytemp = 0
 
-/mob/living/simple_animal/hostile/retaliate/bat/Initialize()
+/mob/living/simple_animal/hostile/retaliate/bat/Initialize(mapload)
 	. = ..()
 	add_verb(src, list(/mob/living/simple_animal/proc/fly_up,
-	/mob/living/simple_animal/proc/fly_down)) 
+	/mob/living/simple_animal/proc/fly_down))
 
 /mob/living/simple_animal/hostile/retaliate/bat/crow
 	name = "zad"
 	desc = ""
 	icon = 'icons/roguetown/mob/monster/crow.dmi'
 	icon_state = "crow_flying"
+	item_state = "crow"
 	icon_living = "crow_flying"
 	icon_dead = "crow1"
 	icon_gib = "crow1"
@@ -72,7 +74,7 @@
 	/// Whether the zad is perched (stationary sprite, cannot move) rather than flying.
 	var/sitting = FALSE
 
-/mob/living/simple_animal/hostile/retaliate/bat/crow/Initialize()
+/mob/living/simple_animal/hostile/retaliate/bat/crow/Initialize(mapload)
 	. = ..()
 	add_verb(src, list(/mob/living/simple_animal/hostile/retaliate/bat/crow/proc/change_stance,
 	/mob/living/simple_animal/hostile/retaliate/bat/crow/proc/emote_caw))
@@ -102,6 +104,13 @@
 /mob/living/simple_animal/hostile/retaliate/bat/crow/get_sound(input)
 	if(input == "caw")
 		return pick('sound/vo/mobs/bird/CROW_01.ogg', 'sound/vo/mobs/bird/CROW_02.ogg', 'sound/vo/mobs/bird/CROW_03.ogg')
+
+// lets you wear them on your HEAD...
+/mob/living/simple_animal/hostile/retaliate/bat/crow/set_item_sprite(obj/item/mob_item/orb)
+	..()
+	orb.mob_overlay_icon = orb.icon
+	orb.worn_offsets = list("x" = 0, "y" = 22)
+	orb.alternate_worn_layer = BODY_UNDER_LAYER // so it looks like they're perching on your head and not clipping through
 
 /obj/effect/decal/remains/crow
 	name = "zad remains"

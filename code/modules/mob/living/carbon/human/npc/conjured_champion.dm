@@ -1,0 +1,352 @@
+/mob/living/carbon/human/species/human/northern/conjured_champion
+	ai_controller = /datum/ai_controller/human_npc/melee
+	d_intent = INTENT_PARRY
+	faction = list(FACTION_NEUTRAL)
+	ambushable = FALSE
+	dodgetime = 25
+	var/loadout = "swordsman"
+	var/arcane_scale = 3
+	var/gear_tier = 1
+	var/datum/weakref/summoner_ref
+
+/mob/living/carbon/human/species/human/northern/conjured_champion/Initialize(mapload)
+	. = ..()
+	set_species(/datum/species/human/northern)
+	gender = pick(MALE, FEMALE)
+	dna.species.random_character(src)
+	addtimer(CALLBACK(src, PROC_REF(after_creation)), 1 SECONDS)
+
+/mob/living/carbon/human/species/human/northern/conjured_champion/proc/outfit_champion(datum/outfit/outfit)
+	if(!outfit)
+		return
+	equipOutfit(outfit)
+	//OV Edit Let servants drop/swap around their gear
+	if(!istype(outfit, /datum/outfit/job/roguetown/conjured_servant))
+		for(var/obj/item/equipped_item in get_equipped_items() + held_items)
+			equipped_item.AddComponent(/datum/component/item_on_drop/dust)
+		for(var/obj/item/held_item in held_items)
+			ADD_TRAIT(held_item, TRAIT_NODROP, TRAIT_GENERIC)
+	else //Make the initial fit qdel when dropped.
+		for(var/obj/item/equipped_item in get_equipped_items() + held_items)
+			equipped_item.item_flags |= DROPDEL
+	//OV Edit End
+
+/mob/living/carbon/human/species/human/northern/conjured_champion/Destroy()
+	release_conjured_gear()
+	return ..()
+//OV Edit Give servant champions the ability to copy slot appearance
+/mob/living/carbon/human/species/human/northern/conjured_champion/get_pilot_ability()
+	if(loadout == "servant")
+		return /datum/action/cooldown/spell/apply_prefs
+	return null
+//OV Edit End
+/mob/living/carbon/human/species/human/northern/conjured_champion/after_creation()
+	..()
+	AddComponent(/datum/component/ai_aggro_system)
+	job = "Conjured Champion"
+	ADD_TRAIT(src, TRAIT_NOMOOD, TRAIT_GENERIC)
+	ADD_TRAIT(src, TRAIT_NOHUNGER, TRAIT_GENERIC)
+	ADD_TRAIT(src, TRAIT_LEECHIMMUNE, INNATE_TRAIT)
+	ADD_TRAIT(src, TRAIT_BREADY, TRAIT_GENERIC)
+	ADD_TRAIT(src, TRAIT_NPC_EXAMINE, TRAIT_GENERIC)
+	ADD_TRAIT(src, TRAIT_BADTRAINER, TRAIT_GENERIC)
+	ADD_TRAIT(src, TRAIT_NODISMEMBER, TRAIT_GENERIC)
+	ADD_TRAIT(src, TRAIT_DUSTABLE, TRAIT_GENERIC)
+	//OV Edit Yeah, no, you're not putting medium and heavy armor on a servant.
+	if(loadout != "servant")
+		ADD_TRAIT(src, TRAIT_MEDIUMARMOR, TRAIT_GENERIC)
+		ADD_TRAIT(src, TRAIT_DUST_DELETE_GEAR, TRAIT_GENERIC)
+		ADD_TRAIT(src, TRAIT_HEAVYARMOR, TRAIT_GENERIC)
+	//OV Edit End
+	var/mob/living/master = summoner_ref?.resolve()
+	if(master)
+		if(master.mind && master.mind.current)
+			master = master.mind.current
+		summoner = master.real_name
+		faction = list("[master.real_name]_faction")
+		apply_fellowship_faction(master, src)
+	switch(loadout)
+		if("swordsman")
+			outfit_champion(new /datum/outfit/job/roguetown/conjured_champion/swordsman)
+			def_intent_change(INTENT_PARRY)
+		if("archer")
+			upgrade_ai_controller(/datum/ai_controller/human_npc/archer)
+			outfit_champion(new /datum/outfit/job/roguetown/conjured_champion/archer)
+			def_intent_change(INTENT_DODGE)
+		if("xbowman")
+			upgrade_ai_controller(/datum/ai_controller/human_npc/archer)
+			outfit_champion(new /datum/outfit/job/roguetown/conjured_champion/xbowman)
+			def_intent_change(INTENT_DODGE)
+		if("greataxeman")
+			outfit_champion(new /datum/outfit/job/roguetown/conjured_champion/greataxeman)
+			def_intent_change(INTENT_PARRY)
+		if("axeman")
+			outfit_champion(new /datum/outfit/job/roguetown/conjured_champion/axeman)
+			def_intent_change(INTENT_PARRY)
+		if("flailman")
+			outfit_champion(new /datum/outfit/job/roguetown/conjured_champion/flailman)
+			def_intent_change(INTENT_PARRY)
+		if("greatflailman")
+			outfit_champion(new /datum/outfit/job/roguetown/conjured_champion/greatflailman)
+			def_intent_change(INTENT_PARRY)
+		if("spearman")
+			outfit_champion(new /datum/outfit/job/roguetown/conjured_champion/spearman)
+			def_intent_change(INTENT_PARRY)
+		if("maceman")
+			outfit_champion(new /datum/outfit/job/roguetown/conjured_champion/maceman)
+			def_intent_change(INTENT_PARRY)
+		if("dopp_zweihander")
+			outfit_champion(new /datum/outfit/job/roguetown/conjured_champion/doppelsoldner/zweihander)
+			def_intent_change(INTENT_PARRY)
+		if("dopp_kriegsmesser")
+			outfit_champion(new /datum/outfit/job/roguetown/conjured_champion/doppelsoldner/kriegsmesser)
+			def_intent_change(INTENT_PARRY)
+		if("dopp_halberd")
+			outfit_champion(new /datum/outfit/job/roguetown/conjured_champion/doppelsoldner/halberd)
+			def_intent_change(INTENT_PARRY)
+		if("dopp_partizan")
+			outfit_champion(new /datum/outfit/job/roguetown/conjured_champion/doppelsoldner/partizan)
+			def_intent_change(INTENT_PARRY)
+		if("dopp_xbow")
+			upgrade_ai_controller(/datum/ai_controller/human_npc/archer)
+			outfit_champion(new /datum/outfit/job/roguetown/conjured_champion/doppelsoldner/xbow)
+			def_intent_change(INTENT_DODGE)
+		//OV Edit Servant option for champion. Gut their psycho tendencies while we're at it
+		if("servant")
+			outfit_champion(new /datum/outfit/job/roguetown/conjured_servant)
+			ai_controller.remove_subtree(/datum/ai_planning_subtree/find_weapon)
+			ai_controller.remove_subtree(/datum/ai_planning_subtree/equip_item)
+			ai_controller.remove_subtree(/datum/ai_planning_subtree/loot)
+			ai_controller.remove_subtree(/datum/ai_planning_subtree/kick_attack)
+			ai_controller.remove_subtree(/datum/ai_planning_subtree/generic_resist)
+			contract_spawned = FALSE
+			filters -= filters["conjureglow"]
+			def_intent_change(INTENT_DODGE)
+		//OV Edit End
+		else
+			outfit_champion(new /datum/outfit/job/roguetown/conjured_champion/greatswordman)
+			def_intent_change(INTENT_PARRY)
+	dna.species.handle_body(src)
+	random_voice_NPC()
+	random_hair_NPC()
+	random_eye_color_NPC()
+	correct_features_NPC()
+	update_hair()
+	update_body()
+	regenerate_icons()
+
+/datum/outfit/job/roguetown/conjured_champion/proc/champion_tier(mob/living/carbon/human/H)
+	if(istype(H, /mob/living/carbon/human/species/human/northern/conjured_champion))
+		var/mob/living/carbon/human/species/human/northern/conjured_champion/C = H
+		return C.gear_tier
+	return 1
+
+/datum/outfit/job/roguetown/conjured_champion/proc/champion_skill(mob/living/carbon/human/H)
+	var/lvl = 3
+	if(istype(H, /mob/living/carbon/human/species/human/northern/conjured_champion))
+		var/mob/living/carbon/human/species/human/northern/conjured_champion/C = H
+		lvl = clamp(C.arcane_scale, 1, 6)
+	var/skill_floor = SKILL_LEVEL_JOURNEYMAN
+	if(champion_tier(H) == 3)
+		skill_floor = SKILL_LEVEL_EXPERT
+	return clamp(max(lvl, skill_floor), skill_floor, 6)
+
+/datum/outfit/job/roguetown/conjured_champion/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	var/tier = champion_tier(H)
+	var/skill = champion_skill(H)
+	H.STASTR = 10 + tier
+	H.STASPD = 11 // To prevent NPC following problem
+	H.STACON = 11 + tier
+	H.STAWIL = 11 + tier
+	H.STAPER = 10
+	H.STAINT = 10
+	H.STALUC = 10
+	H.adjust_skillrank_up_to(/datum/skill/combat/unarmed, skill, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/combat/wrestling, skill, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/misc/swimming, SKILL_LEVEL_JOURNEYMAN, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/misc/climbing, SKILL_LEVEL_JOURNEYMAN, TRUE)
+	shirt = /obj/item/clothing/suit/roguetown/armor/gambeson
+	switch(tier)
+		if(2, 3)
+			armor = /obj/item/clothing/suit/roguetown/armor/plate/full
+			pants = /obj/item/clothing/under/roguetown/platelegs
+			shoes = /obj/item/clothing/shoes/roguetown/boots/armor
+			gloves = /obj/item/clothing/gloves/roguetown/plate
+			head = /obj/item/clothing/head/roguetown/helmet/heavy
+			neck = /obj/item/clothing/neck/roguetown/gorget
+		else
+			armor = /obj/item/clothing/suit/roguetown/armor/plate/full/iron
+			pants = /obj/item/clothing/under/roguetown/platelegs/iron
+			shoes = /obj/item/clothing/shoes/roguetown/boots/armor/iron
+			gloves = /obj/item/clothing/gloves/roguetown/plate/iron
+			head = /obj/item/clothing/head/roguetown/helmet/heavy/barbute/iron
+			neck = /obj/item/clothing/neck/roguetown/gorget
+
+/datum/outfit/job/roguetown/conjured_champion/swordsman/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	var/skill = champion_skill(H)
+	var/tier = champion_tier(H)
+	H.adjust_skillrank_up_to(/datum/skill/combat/swords, skill, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/combat/shields, skill, TRUE)
+	r_hand = /obj/item/rogueweapon/sword
+	l_hand = (tier >= 2) ? /obj/item/rogueweapon/shield/tower/metal : /obj/item/rogueweapon/shield/wood
+
+/datum/outfit/job/roguetown/conjured_champion/greatswordman/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	var/skill = champion_skill(H)
+	H.adjust_skillrank_up_to(/datum/skill/combat/swords, skill, TRUE)
+	r_hand = /obj/item/rogueweapon/greatsword
+
+/datum/outfit/job/roguetown/conjured_champion/greataxeman/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	var/skill = champion_skill(H)
+	H.adjust_skillrank_up_to(/datum/skill/combat/axes, skill, TRUE)
+	r_hand = /obj/item/rogueweapon/greataxe/steel
+
+/datum/outfit/job/roguetown/conjured_champion/axeman/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	var/skill = champion_skill(H)
+	var/tier = champion_tier(H)
+	H.adjust_skillrank_up_to(/datum/skill/combat/axes, skill, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/combat/shields, skill, TRUE)
+	r_hand = /obj/item/rogueweapon/stoneaxe/battle
+	l_hand = (tier >= 2) ? /obj/item/rogueweapon/shield/tower/metal : /obj/item/rogueweapon/shield/wood
+
+/datum/outfit/job/roguetown/conjured_champion/flailman/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	var/skill = champion_skill(H)
+	var/tier = champion_tier(H)
+	H.adjust_skillrank_up_to(/datum/skill/combat/whipsflails, skill, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/combat/shields, skill, TRUE)
+	r_hand = /obj/item/rogueweapon/flail/sflail
+	l_hand = (tier >= 2) ? /obj/item/rogueweapon/shield/tower/metal : /obj/item/rogueweapon/shield/wood
+
+/datum/outfit/job/roguetown/conjured_champion/greatflailman/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	var/skill = champion_skill(H)
+	H.adjust_skillrank_up_to(/datum/skill/combat/whipsflails, skill, TRUE)
+	r_hand = /obj/item/rogueweapon/flail/peasantwarflail/iron
+
+/datum/outfit/job/roguetown/conjured_champion/spearman/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	var/skill = champion_skill(H)
+	H.adjust_skillrank_up_to(/datum/skill/combat/polearms, skill, TRUE)
+	r_hand = /obj/item/rogueweapon/spear
+
+/datum/outfit/job/roguetown/conjured_champion/maceman/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	var/skill = champion_skill(H)
+	H.adjust_skillrank_up_to(/datum/skill/combat/maces, skill, TRUE)
+	r_hand = /obj/item/rogueweapon/mace/goden/steel
+
+/datum/outfit/job/roguetown/conjured_champion/archer/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	var/ranged_skill = min(champion_skill(H), SKILL_LEVEL_EXPERT)
+	H.STAPER = 13 + champion_tier(H)
+	H.STACON -= 1
+	H.STAWIL -= 1
+	H.adjust_skillrank_up_to(/datum/skill/combat/bows, ranged_skill, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/combat/swords, clamp(ranged_skill - 1, SKILL_LEVEL_APPRENTICE, SKILL_LEVEL_LEGENDARY), TRUE)
+	backr = /obj/item/gun/ballistic/revolver/grenadelauncher/bow/longbow
+	backl = /obj/item/quiver/conjured
+	beltr = /obj/item/rogueweapon/sword/short/iron
+
+/datum/outfit/job/roguetown/conjured_champion/xbowman/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	var/ranged_skill = min(champion_skill(H), SKILL_LEVEL_EXPERT)
+	H.STAPER = 13 + champion_tier(H)
+	H.STACON -= 1
+	H.STAWIL -= 1
+	H.adjust_skillrank_up_to(/datum/skill/combat/crossbows, ranged_skill, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/combat/swords, clamp(ranged_skill - 1, SKILL_LEVEL_APPRENTICE, SKILL_LEVEL_EXPERT), TRUE)
+	backr = /obj/item/gun/ballistic/revolver/grenadelauncher/crossbow
+	backl = /obj/item/quiver/bolt/conjured
+	beltr = /obj/item/rogueweapon/sword/short/iron
+
+/datum/outfit/job/roguetown/conjured_champion/doppelsoldner/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	H.STACON += 1
+	H.STAWIL += 1
+	armor = /obj/item/clothing/suit/roguetown/armor/plate/cuirass
+	shirt = /obj/item/clothing/suit/roguetown/armor/gambeson/heavy/grenzelhoft
+	pants = /obj/item/clothing/under/roguetown/heavy_leather_pants/grenzelpants
+	shoes = /obj/item/clothing/shoes/roguetown/grenzelhoft
+	gloves = /obj/item/clothing/gloves/roguetown/angle/grenzelgloves
+	wrists = /obj/item/clothing/wrists/roguetown/bracers
+	head = /obj/item/clothing/head/roguetown/helmet/sallet/visored/grenzelhoft
+	neck = /obj/item/clothing/neck/roguetown/bevor
+	cloak = /obj/item/clothing/cloak/tabard/stabard/grenzelhoft
+	belt = /obj/item/storage/belt/rogue/leather
+	backl = /obj/item/rogueweapon/scabbard/gwstrap
+
+/datum/outfit/job/roguetown/conjured_champion/doppelsoldner/zweihander/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	H.adjust_skillrank_up_to(/datum/skill/combat/swords, champion_skill(H), TRUE)
+	r_hand = /obj/item/rogueweapon/greatsword/grenz
+
+/datum/outfit/job/roguetown/conjured_champion/doppelsoldner/kriegsmesser/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	var/skill = champion_skill(H)
+	H.adjust_skillrank_up_to(/datum/skill/combat/swords, skill, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/combat/shields, skill, TRUE)
+	r_hand = /obj/item/rogueweapon/sword/long/kriegmesser
+	l_hand = /obj/item/rogueweapon/shield/buckler
+
+/datum/outfit/job/roguetown/conjured_champion/doppelsoldner/halberd/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	H.adjust_skillrank_up_to(/datum/skill/combat/polearms, champion_skill(H), TRUE)
+	r_hand = /obj/item/rogueweapon/halberd
+
+/datum/outfit/job/roguetown/conjured_champion/doppelsoldner/partizan/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	H.adjust_skillrank_up_to(/datum/skill/combat/polearms, champion_skill(H), TRUE)
+	r_hand = /obj/item/rogueweapon/spear/partizan
+
+/datum/outfit/job/roguetown/conjured_champion/doppelsoldner/xbow/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	var/ranged_skill = min(champion_skill(H), SKILL_LEVEL_EXPERT)
+	H.STAPER = 13 + champion_tier(H)
+	H.STACON -= 1
+	H.STAWIL -= 1
+	H.adjust_skillrank_up_to(/datum/skill/combat/crossbows, ranged_skill, TRUE)
+	H.adjust_skillrank_up_to(/datum/skill/combat/axes, clamp(ranged_skill - 1, SKILL_LEVEL_APPRENTICE, SKILL_LEVEL_EXPERT), TRUE)
+	armor = /obj/item/clothing/suit/roguetown/armor/brigandine/light
+	backr = /obj/item/gun/ballistic/revolver/grenadelauncher/crossbow
+	backl = /obj/item/quiver/bolt/conjured
+	beltr = /obj/item/rogueweapon/stoneaxe/woodcut/steel
+
+
+//OV Edit: Servant option for champion
+/datum/outfit/job/roguetown/conjured_servant/pre_equip(mob/living/carbon/human/H, visualsOnly)
+	. = ..()
+	//Low stats save speed, they are either a packmule or for scenes.
+	H.STASTR = 8
+	H.STASPD = 11 // To prevent NPC following problem
+	H.STACON = 8
+	H.STAWIL = 8
+	H.STAPER = 10
+	H.STAINT = 10
+	H.STALUC = 10
+	pants = /obj/item/clothing/under/roguetown/tights
+	shirt = /obj/item/clothing/suit/roguetown/shirt/undershirt
+	shoes = /obj/item/clothing/shoes/roguetown/shortboots
+
+/datum/action/cooldown/spell/apply_prefs
+	name = "Apply Appearance"
+	desc = "Give this summon the appearance of your currently loaded slot."
+	cooldown_time = 2 MINUTES //So people can't spam icon refreshes, should ideally only need this once anyways
+	click_to_activate = FALSE
+
+/datum/action/cooldown/spell/apply_prefs/cast()
+	. = ..()
+	if(owner.client && ishuman(owner))
+		var/mob/living/carbon/human/H = owner
+		owner.client.prefs.copy_to(H , TRUE, FALSE)
+		//Dendortouched breaks things
+		for(var/datum/charflaw/cf in H.charflaws)
+			if(istype(cf, /datum/charflaw/dendor_touched))
+				H.charflaws.Remove(cf)
+		return TRUE
+	return FALSE
+//OV Edit end

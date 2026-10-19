@@ -1,4 +1,5 @@
 /datum/action/cooldown/spell/selfbuff
+	source_aspect = /datum/magic_aspect/pseudo/luminary
 	name = "Divine Arcanum"
 	desc = "Improves the reflexes and wrap yourself and up to 3 nearby fellowship party members with soothing arcyne light(you need to be part of a fellowship to receive the effect of this spell, even alone)"
 	button_icon = 'icons/mob/actions/mage_augmentation.dmi'
@@ -43,22 +44,21 @@
 
 /atom/movable/screen/alert/status_effect/buff/lesser_guidance
 	name = "Awakening"
-	desc = "Arcyne energy quickens the Mynd. (+12% chance to bypass parry / dodge, +12% chance to parry / dodge)"
+	desc = "Arcyne energy quickens the Mynd. (+2 Perception)"
 	icon_state = "buff"
 
 /datum/status_effect/buff/lesser_guidance
 	id = "lesser_guidance"
 	alert_type = /atom/movable/screen/alert/status_effect/buff/lesser_guidance
+	effectedstats = list(STATKEY_PER = 2)
 	duration = 60 SECONDS
 
 /datum/status_effect/buff/lesser_guidance/on_apply()
 	. = ..()
-	ADD_TRAIT(owner, TRAIT_LESSER_GUIDANCE, MAGIC_TRAIT)
 	to_chat(owner, span_warning("Blessed Arcynes guides me true!"))
 
 /datum/status_effect/buff/lesser_guidance/on_remove()
 	. = ..()
-	REMOVE_TRAIT(owner, TRAIT_LESSER_GUIDANCE, MAGIC_TRAIT)
 	to_chat(owner, span_warning("Blessed Arcynes seeps out of my control!"))
 
 /atom/movable/screen/alert/status_effect/buff/healingaura

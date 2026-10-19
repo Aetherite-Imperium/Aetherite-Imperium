@@ -63,6 +63,9 @@ SUBSYSTEM_DEF(throwing)
 	var/delayed_time = 0
 	var/last_move = 0
 	var/extra = FALSE
+	//ov edit
+	var/throwvore = FALSE
+	//ov edit
 
 /datum/thrownthing/New(thrownthing, target, target_turf, init_dir, maxrange, speed, thrower, diagonals_first, force, callback, target_zone, extra)
 	. = ..()
@@ -162,7 +165,7 @@ SUBSYSTEM_DEF(throwing)
 					return //deletion should already be handled by on_thrownthing_qdel()
 				break
 		if (!hit)
-			thrownthing.throw_impact(get_turf(thrownthing), src)  // we haven't hit something yet and we still must, let's hit the ground.
+			thrownthing.throw_impact(get_turf(thrownthing), src)	// we haven't hit something yet and we still must, let's hit the ground.
 			if(QDELETED(thrownthing)) //throw_impact can delete things, such as glasses smashing
 				return //deletion should already be handled by on_thrownthing_qdel()
 

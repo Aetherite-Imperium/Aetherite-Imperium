@@ -1,8 +1,5 @@
-var/global/list/pridelist = list(
-	"Rainbow" = "#fcfcfc"
-)
-
-var/list/used_colors
+GLOBAL_LIST_INIT(pridelist, list("Rainbow" = "#fcfcfc"))
+GLOBAL_LIST_EMPTY(used_colors)
 
 // DYE BIN
 
@@ -17,6 +14,10 @@ var/list/used_colors
 	var/activecolor = "#FFFFFF"
 	var/activecolor_detail = "#FFFFFF"
 	var/activecolor_altdetail = "#FFFFFF"
+	//OV ADD START
+	var/tauractivecolor_detail = "#FFFFFF"
+	var/tauractivecolor_altdetail = "#FFFFFF"
+	//OV ADD END
 	var/list/allowed_types = list(
 			/obj/item/clothing,
 			/obj/item/storage,
@@ -41,13 +42,20 @@ var/list/used_colors
 			/obj/item/reagent_containers/glass/bowl/carved/porcelain,
 			/obj/item/kitchen/spoon/carved/porcelain,
 			/obj/item/kitchen/fork/carved/porcelain,
-			/obj/item/cooking/platter/carved/porcelain
+			/obj/item/cooking/platter/carved/porcelain,
+			/obj/item/reagent_containers/glass/bucket/pot/porcelain,
+			/obj/item/reagent_containers/glass/bottle/claytallbaked,
+			/obj/item/reagent_containers/glass/bottle/clayfootbaked,
+			/obj/item/reagent_containers/glass/bottle/claybamanabaked,
+			/obj/item/reagent_containers/glass/bottle/clayamphorabaked,
+			/obj/item/reagent_containers/glass/bottle/clayskinnybaked,
+			/obj/item/reagent_containers/glass/carafe/porcelain
 			)
 
-/obj/machinery/gear_painter/Initialize()
+/obj/machinery/gear_painter/Initialize(mapload)
 	..()
-	used_colors += COLOR_MAP
-	used_colors += pridelist
+	GLOB.used_colors |= COLOR_MAP
+	GLOB.used_colors |= GLOB.pridelist
 
 /obj/machinery/gear_painter/Destroy()
 	if(inserted)
@@ -86,7 +94,7 @@ var/list/used_colors
 		colors_to_pick["Primary Keep Color"] = GLOB.lordprimary
 	if(GLOB.lordsecondary)
 		colors_to_pick["Secondary Keep Color"] = GLOB.lordsecondary
-	colors_to_pick += used_colors.Copy()
+	colors_to_pick += GLOB.used_colors.Copy()
 	var/picked = input(user, "Choose your dye:", "Dyes", null) as null|anything in colors_to_pick
 	if(!picked)
 		return null
@@ -209,6 +217,41 @@ var/list/used_colors
 		dat += "<A href='?src=\ref[src];paint_altdetail=1'>Apply new color</A> | "
 		dat += "<A href='?src=\ref[src];clear_altdetail=1'>Remove paintjob</A><BR>"
 
+	//OV ADD START
+	// Taur tasset dyyyyyyeeeing - only for heavy armor when user is a taur
+	if(istype(inserted_item, /obj/item/clothing))
+		var/obj/item/clothing/clothing_check = inserted_item
+		if(clothing_check.armor_class == ARMOR_CLASS_HEAVY && ishuman(user))
+			var/mob/living/carbon/human/H = user
+			var/obj/item/bodypart/taur/taur = H.get_taur_tail()
+			if(taur?.taur_clothing_category)
+				dat += "<b>Taur Barding Tassets</b><BR>"
+
+				var/icon/tasset1_preview = new /icon()
+				tasset1_preview.Insert(new /icon('modular_ochrevalley/icons/roguetown/clothing/onmob/taur_clothing.dmi', "plate-tasset1_[taur.taur_clothing_category]"), "", SOUTH, 0)
+				if(taur.tasset1_color)
+					tasset1_preview.Blend(taur.tasset1_color, ICON_MULTIPLY)
+				dat += "<div style='text-align:center;'>"
+				dat += "<img src='data:image/png;base64,[icon2base64(tasset1_preview)]' style='vertical-align:middle; width:64px; height:64px; image-rendering: pixelated; image-rendering: crisp-edges;'>"
+				dat += "</div>"
+				dat += "Tasset 1 Color: <font color='[taur.tasset1_color || "#FFFFFF"]'>&#10070;</font> "
+				dat += "<A href='?src=\ref[src];select_tasset1=1'>Select color.</A><BR>"
+				dat += "<A href='?src=\ref[src];paint_tasset1=1'>Apply color</A> | "
+				dat += "<A href='?src=\ref[src];clear_tasset1=1'>Remove color</A><BR><BR>"
+
+				var/icon/tasset2_preview = new /icon()
+				tasset2_preview.Insert(new /icon('modular_ochrevalley/icons/roguetown/clothing/onmob/taur_clothing.dmi', "plate-tasset2_[taur.taur_clothing_category]"), "", SOUTH, 0)
+				if(taur.tasset2_color)
+					tasset2_preview.Blend(taur.tasset2_color, ICON_MULTIPLY)
+				dat += "<div style='text-align:center;'>"
+				dat += "<img src='data:image/png;base64,[icon2base64(tasset2_preview)]' style='vertical-align:middle; width:64px; height:64px; image-rendering: pixelated; image-rendering: crisp-edges;'>"
+				dat += "</div>"
+				dat += "Tasset 2 Color: <font color='[taur.tasset2_color || "#FFFFFF"]'>&#10070;</font> "
+				dat += "<A href='?src=\ref[src];select_tasset2=1'>Select color.</A><BR>"
+				dat += "<A href='?src=\ref[src];paint_tasset2=1'>Apply color</A> | "
+				dat += "<A href='?src=\ref[src];clear_tasset2=1'>Remove color</A><BR><BR>"
+	//OV ADD END
+
 	dat += "<BR><A href='?src=\ref[src];eject=1'>Eject item.</A><BR>"
 	menu.set_content("<html>[dat.Join("")]</html>")
 	menu.open()
@@ -312,6 +355,94 @@ var/list/used_colors
 		inserted = null
 		interact(usr)
 
+	//OV ADD START - TAUR BARDING
+	if(href_list["select_tasset1"])
+		if(!inserted || !ishuman(usr))
+			return
+		var/obj/item/clothing/armor_item = inserted
+		if(!istype(armor_item) || armor_item.armor_class != ARMOR_CLASS_HEAVY)
+			return
+		var/c = pick_dye(usr, tauractivecolor_detail, "Taur Tasset Primary")
+		if(!c) return
+		tauractivecolor_detail = c
+		interact(usr)
+
+	if(href_list["select_tasset2"])
+		if(!inserted || !ishuman(usr))
+			return
+		var/obj/item/clothing/armor_item = inserted
+		if(!istype(armor_item) || armor_item.armor_class != ARMOR_CLASS_HEAVY)
+			return
+		var/c = pick_dye(usr, tauractivecolor_altdetail, "Taur Tasset Secondary")
+		if(!c) return
+		tauractivecolor_altdetail = c
+		interact(usr)
+
+	if(href_list["paint_tasset1"])
+		if(!inserted || !ishuman(usr))
+			return
+		var/obj/item/clothing/armor_item = inserted
+		if(!istype(armor_item) || armor_item.armor_class != ARMOR_CLASS_HEAVY)
+			return
+		var/mob/living/carbon/human/H = usr
+		var/obj/item/bodypart/taur/taur = H.get_taur_tail()
+		if(!taur?.taur_clothing_category)
+			return
+		taur.tasset1_color = tauractivecolor_detail
+		playsound(src, "bubbles", 50, 1)
+		H.update_inv_armor()
+		H.update_inv_shirt()
+		interact(usr)
+
+	if(href_list["paint_tasset2"])
+		if(!inserted || !ishuman(usr))
+			return
+		var/obj/item/clothing/armor_item = inserted
+		if(!istype(armor_item) || armor_item.armor_class != ARMOR_CLASS_HEAVY)
+			return
+		var/mob/living/carbon/human/H = usr
+		var/obj/item/bodypart/taur/taur = H.get_taur_tail()
+		if(!taur?.taur_clothing_category)
+			return
+		taur.tasset2_color = tauractivecolor_altdetail
+		playsound(src, "bubbles", 50, 1)
+		H.update_inv_armor()
+		H.update_inv_shirt()
+		interact(usr)
+
+	if(href_list["clear_tasset1"])
+		if(!inserted || !ishuman(usr))
+			return
+		var/obj/item/clothing/armor_item = inserted
+		if(!istype(armor_item) || armor_item.armor_class != ARMOR_CLASS_HEAVY)
+			return
+		var/mob/living/carbon/human/H = usr
+		var/obj/item/bodypart/taur/taur = H.get_taur_tail()
+		if(!taur?.taur_clothing_category)
+			return
+		taur.tasset1_color = "#FFFFFF"
+		playsound(src, "bubbles", 50, 1)
+		H.update_inv_armor()
+		H.update_inv_shirt()
+		interact(usr)
+
+	if(href_list["clear_tasset2"])
+		if(!inserted || !ishuman(usr))
+			return
+		var/obj/item/clothing/armor_item = inserted
+		if(!istype(armor_item) || armor_item.armor_class != ARMOR_CLASS_HEAVY)
+			return
+		var/mob/living/carbon/human/H = usr
+		var/obj/item/bodypart/taur/taur = H.get_taur_tail()
+		if(!taur?.taur_clothing_category)
+			return
+		taur.tasset2_color = "#FFFFFF"
+		playsound(src, "bubbles", 50, 1)
+		H.update_inv_armor()
+		H.update_inv_shirt()
+		interact(usr)
+	//OV ADD END
+
 
 // PAINTBRUSH
 
@@ -354,7 +485,7 @@ var/list/used_colors
 	var/choice_mode = alert(user, "Input Choice", "Brush Dye", "Color Wheel", "Color Preset")
 	if(choice_mode == "Color Preset")
 		var/list/presets = COLOR_MAP
-		presets += pridelist
+		presets += GLOB.pridelist
 
 		var/picked = input(user, "Choose your dye:", "Dyes", null) as null|anything in presets
 		if(!picked)
@@ -368,6 +499,54 @@ var/list/used_colors
 		dye = hexdye
 
 	update_icon()
+
+/obj/item/dye_brush/pre_attack(atom/A, mob/living/user, params)
+	if(..())
+		return TRUE
+	var/obj/item/target = A
+	if(!istype(target) || target.glazed || !target.icon)
+		return FALSE
+
+	var/static/list/glaze_finishes = list(
+		"Clear glaze" = "glazed",
+		"Kintsugi glaze" = "shattergold",
+		"Lakkarian glaze" = "naled"
+	)
+
+	var/list/choices = list()
+	for(var/finish in glaze_finishes)
+		if(icon_exists(target.icon, "[target.icon_state]_[glaze_finishes[finish]]"))
+			choices += finish
+	if(!length(choices))
+		return FALSE
+
+	if(target.reagents && target.reagents.total_volume)
+		to_chat(user, span_notice("I can't glaze [target] while it has liquid in it."))
+		return TRUE
+
+	var/choice = choices[1]
+	if(length(choices) > 1)
+		choice = tgui_input_list(user, "Which finish shall I glaze [target] with?", "Glazing", choices)
+	if(!choice)
+		return TRUE
+
+	if(QDELETED(target) || target.glazed || !in_range(target, user))
+		return TRUE
+
+	if(!do_after(user, 3 SECONDS, target = target))
+		return TRUE
+	if(target.glazed)
+		return TRUE
+
+	target.glazed = TRUE
+	target.glaze_suffix = glaze_finishes[choice]
+	target.glaze_bonus_flat = rand(5, 15)
+	target.icon_state = "[target.icon_state]_[target.glaze_suffix]"
+	target.update_icon()
+	playsound(loc, "sound/foley/scrubbing[pick(1,2)].ogg", 60, TRUE)
+	user.visible_message(span_notice("[user] glazes [target]."), \
+		span_notice("I glaze [target] with [LOWER_TEXT(choice)]."))
+	return TRUE
 
 /obj/item/dye_brush/attack_turf(turf/T, mob/living/user)
 	if(!iswallturf(T))
@@ -414,4 +593,3 @@ var/list/used_colors
 		return
 	dye = null
 	update_icon()
-

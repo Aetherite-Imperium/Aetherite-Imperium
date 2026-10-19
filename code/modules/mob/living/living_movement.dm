@@ -80,7 +80,7 @@
 			mod = min(default_delay, skill_delay)
 
 	var/spdchange = (10-get_effective_speed())*SPEED_MOVSPD_MOD
-	//spdchange = clamp(spdchange, -0.5, 1)  //Previous clamp when MOVSPD_MOD was at 0.1
+	//spdchange = clamp(spdchange, -0.5, 1)	//Previous clamp when MOVSPD_MOD was at 0.1
 	mod = mod+spdchange
 	add_movespeed_modifier(MOVESPEED_ID_MOB_WALK_RUN_CONFIG_SPEED, TRUE, 100, override = TRUE, multiplicative_slowdown = mod)
 
@@ -89,14 +89,19 @@
 	return STASPD
 
 /mob/living/proc/update_turf_movespeed(turf/open/T)
-	if(isopenturf(T))
-		var/usedslow = 0
-		if(!HAS_TRAIT(src, TRAIT_TRAM_MOVER))
-			usedslow = T.get_slowdown(src)
-		if(usedslow != 0)
-			add_movespeed_modifier(MOVESPEED_ID_LIVING_TURF_SPEEDMOD, update=TRUE, priority=100, multiplicative_slowdown=usedslow, movetypes=GROUND)
-		else
-			remove_movespeed_modifier(MOVESPEED_ID_LIVING_TURF_SPEEDMOD)
+	if(!isopenturf(T)) // OV Edit Start
+		remove_movespeed_modifier(MOVESPEED_ID_LIVING_TURF_SPEEDMOD)
+		return
+	if((movement_type & (FLYING|FLOATING)) || flying)
+		remove_movespeed_modifier(MOVESPEED_ID_LIVING_TURF_SPEEDMOD)
+		return
+	if(SEND_SIGNAL(src, COMSIG_LIVING_UPDATE_TURF_MOVESPEED) & TURF_MOVESPEED_BLOCKED)
+		return
+	var/usedslow = T.get_slowdown(src)
+	if(HAS_TRAIT(src, TRAIT_TRAM_MOVER))
+		usedslow = 0
+	if(usedslow != 0)
+		add_movespeed_modifier(MOVESPEED_ID_LIVING_TURF_SPEEDMOD, update=TRUE, priority=100, multiplicative_slowdown=usedslow, movetypes=GROUND) // OV Edit End
 	else
 		remove_movespeed_modifier(MOVESPEED_ID_LIVING_TURF_SPEEDMOD)
 
@@ -133,6 +138,8 @@
 	remove_movespeed_modifier(MOVESPEED_ID_BULKY_DRAGGING)
 
 /mob/living/can_zFall(turf/T, levels)
+	if(HAS_TRAIT(src, TRAIT_CHARGE_AIRBORNE))
+		return FALSE
 	if(HAS_TRAIT(src, TRAIT_WOODWALKER) && !HAS_TRAIT(src, TRAIT_DEADITE)) //Zombies just fall through leaves, we're not doing that. Stop.
 		for(var/leaf in T.contents)
 			if(istype(leaf, /obj/structure/flora/newleaf))

@@ -236,7 +236,7 @@
 	var/list/fullness5_messages = list(
 		"%pred's %belly is completely filled to it's limit!"
 		)
-	
+
 	var/tmp/reagent_chosen = REAGENT_WATER				// variable for switch to figure out what to set variables when a certain reagent is selected
 	var/tmp/static/list/reagent_choices = list(		// List of reagents people can chose, maybe one day expand so it covers criterias like dogborgs who can make meds, booze, etc - Jack
 	REAGENT_WATER,
@@ -253,11 +253,9 @@
 	REAGENT_HONEY,
 	REAGENT_PARAPOISON,
 	REAGENT_SPACEDRUGS,
-	REAGENT_POT_MANA,
-	REAGENT_POT_HEALTH,
+//	REAGENT_POT_MANA, //OV REMOVE
+//	REAGENT_POT_HEALTH, //OV REMOVE
 	REAGENT_JUICE_JACKBERRY,
-	REAGENT_JUICE_JACKBERRY_POISON,
-	REAGENT_JUICE_APPLE,
 	REAGENT_JUICE_TOMATO,
 	REAGENT_JUICE_STRAWBERRY,
 	REAGENT_JUICE_BLACKBERRY,
@@ -265,9 +263,7 @@
 	REAGENT_JUICE_PEAR,
 	REAGENT_JUICE_LEMON,
 	REAGENT_JUICE_LIME,
-	REAGENT_JUICE_TANGERINE,
 	REAGENT_JUICE_PLUM,
-	REAGENT_JUICE_CARROT,
 	REAGENT_ALCOHOL_BEER,
 	REAGENT_ALCOHOL_RUM,
 	REAGENT_ALCOHOL_CIDER_APPLE,
@@ -697,10 +693,13 @@
 		if(count_items_for_sprite) // If this is enabled also update fullness for non-living things
 			owner.handle_belly_update() // This is run whenever a belly's contents are changed.
 		var/obj/item/I = thing
-		if(I.gurgled)
-			I.cut_overlay(GLOB.gurgled_overlays[I.gurgled_color]) //No double-overlay for worn items.
-			I.add_overlay(GLOB.gurgled_overlays[I.gurgled_color])
-		if(I.d_mult < 1)
+		if(contaminates)
+			wash_obj(I, CLEAN_MEDIUM)
+			I.gurgle_contaminate(src, contamination_flavor, contamination_color)
+		//if(I.gurgled)
+			//I.cut_overlay(GLOB.gurgled_overlays[I.gurgled_color]) //No double-overlay for worn items.
+			//I.add_overlay(GLOB.gurgled_overlays[I.gurgled_color])
+		/*if(I.d_mult < 1)
 			if(I.d_stage_overlay)
 				I.cut_overlay(I.d_stage_overlay)
 			var/image/temp = new /image(GLOB.gurgled_overlays[I.gurgled_color ? I.gurgled_color : "green"])
@@ -708,7 +707,7 @@
 			I.d_stage_overlay = temp
 			for(var/count in I.d_mult to 1 step 0.25)
 				// Note, this should be refactored to drop priority overlays
-				I.add_overlay(I.d_stage_overlay, TRUE)
+				I.add_overlay(I.d_stage_overlay, TRUE)*/
 
 // Release all contents of this belly into the owning mob's location.
 // If that location is another mob, contents are transferred into whichever of its bellies the owning mob is in.
@@ -765,7 +764,7 @@
 /obj/belly/proc/release_specific_contents(atom/movable/M, silent = FALSE)
 	if (!(M in contents))
 		return 0 // They weren't in this belly anyway
-	
+
 	for(var/mob/living/L in M.contents)
 		L.muffled = FALSE
 		L.forced_psay = FALSE
@@ -802,7 +801,7 @@
 					if(P.absorbed)
 						absorbed_count++
 				Pred.reagents.trans_to(Prey, Pred.reagents.total_volume / absorbed_count)
-	
+
 	//Makes it so that if prey are heavily asleep, they will wake up shortly after release
 	if(isliving(M))
 		var/mob/living/ML = M
@@ -821,7 +820,7 @@
 		if("subtle")
 			privacy_range = 1
 			//privacy_volume = 25
-	
+
 	//Print notifications/sound if necessary
 	if(isobserver(M))
 		silent = TRUE
@@ -837,7 +836,7 @@
 			soundfile = GLOB.fancy_release_sounds[release_sound]
 		if(soundfile)
 			playsound(src, soundfile, vol = sound_volume, vary = 1, falloff = VORE_SOUND_FALLOFF, frequency = noise_freq, pref_toggle = "eating_noises")
-	
+
 	if(!owner.ckey && escape_stun)
 		owner.Stun(escape_stun)
 
@@ -968,6 +967,7 @@
 		M.forceMove(hasMMI)
 	else*/
 	//OV edit
+	SEND_SIGNAL(M, COMSIG_LIVING_DEATH, FALSE) //Should smooth some things out, especially with summons and other things that take you out of your body.
 	M.reset_view(null)
 	var/sfx
 	if(!fancy_vore)
@@ -985,7 +985,7 @@
 	M.x = 1
 	M.y = 1
 	M.z = 1
-	M.alpha = 0 
+	M.alpha = 0
 	owner.handle_belly_update()
 	playsound(src, sfx, vary = 1, vol = 75, falloff = VORE_SOUND_FALLOFF, frequency = noise_freq, pref_toggle = "digestion_noises")
 	SEND_SIGNAL(M, COMSIG_MOB_DIGESTION_DEATH, src, owner)
